@@ -1,10 +1,15 @@
 package catchtable.cooking.controller;
 
-import catchtable.cooking.domain.Restaurant;
-import catchtable.cooking.dto.RestaurantDto;
+import catchtable.cooking.model.Restaurant;
+import catchtable.cooking.model.Result;
+import catchtable.cooking.persist.domain.RestaurantEntity;
 import catchtable.cooking.service.RestaurantService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -18,28 +23,27 @@ public class RestaurantController {
     }
 
 
+    // 전체 식당 리스트 조회
     @GetMapping("/restaurant/entire")
-    public void readRestaurant() {
-
+    public ResponseEntity<Result> readEntireRestaurant() {
+        List<RestaurantEntity> restaurantEntityList = restaurantService.readEntireRestaurant();
+        return ResponseEntity.ok(Result.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurantEntityList));
     }
 
-    // 특정 식당 정보 조회
+    // 특정 식당 정보 조회 (상세 페이지)
     @GetMapping("/restaurant/{id}")
-    public Restaurant readRestaurant(@PathVariable Long id) {
-        return restaurantService.readRestaurant(id);
+    public ResponseEntity<Result> readRestaurant(@PathVariable Long id) {
+        RestaurantEntity restaurantEntity = restaurantService.readRestaurant(id);
+        return ResponseEntity.ok(Result.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurantEntity));
     }
+
 
     // 식당 정보 저장
-    @PostMapping("/restaurant/create")
-    public void createRestaurant(@RequestBody RestaurantDto restaurantDto) {
-        Restaurant restaurant = Restaurant.builder()
-                .name(restaurantDto.getName())
-                .address(restaurantDto.getAddress())
-                .menu(restaurantDto.getMenu())
-                .phoneNumber(restaurantDto.getPhoneNumber())
-                .build();
-        log.info("Restaurant created: {}", restaurant);
+    @PostMapping("/restaurant/post")
+    public ResponseEntity<Result> createRestaurant(@RequestBody Restaurant restaurant) {
+        // RequestBody로 받은 정보들을 model에 저장
         restaurantService.createRestaurant(restaurant);
+        return ResponseEntity.ok(Result.res(HttpStatus.CREATED, HttpStatus.CREATED.toString(), restaurant));
     }
 
 
