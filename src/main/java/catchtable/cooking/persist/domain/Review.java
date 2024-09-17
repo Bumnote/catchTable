@@ -1,6 +1,6 @@
 package catchtable.cooking.persist.domain;
 
-import catchtable.cooking.model.Review;
+import catchtable.cooking.dto.ReviewCreateRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +10,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewEntity {
+public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +25,11 @@ public class ReviewEntity {
     @ManyToOne(fetch = FetchType.LAZY) // 지연로딩으로 설정
     @JoinColumn(name = "restaurant_id") // 외래키 설정
     @JsonIgnore // ManyToOne
-    private RestaurantEntity restaurantEntity;
+    private Restaurant restaurant;
 
-    public ReviewEntity(RestaurantEntity restaurantEntity, Review review) {
-        this.content = review.getContent();
-        this.restaurantEntity = restaurantEntity;
+    public Review(Restaurant restaurant, ReviewCreateRequest reviewCreateRequest) {
+        this.content = reviewCreateRequest.getContent();
+        this.restaurant = restaurant;
     }
 
 

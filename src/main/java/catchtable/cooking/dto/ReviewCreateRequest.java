@@ -1,11 +1,11 @@
-package catchtable.cooking.model;
+package catchtable.cooking.dto;
 
 import lombok.*;
 
 @Data
 @Getter
 @NoArgsConstructor
-public class Review {
+public class ReviewCreateRequest {
 
     private String content;
 
