@@ -1,37 +1,39 @@
 package catchtable.cooking.service;
 
-import catchtable.cooking.model.Restaurant;
-import catchtable.cooking.persist.domain.RestaurantEntity;
+import catchtable.cooking.dto.RestaurantCreateRequest;
+import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.persist.repository.RestaurantRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
 
-
-    // 생성자 주입
-    public RestaurantService(RestaurantRepository restaurantRepository) {
-        this.restaurantRepository = restaurantRepository;
-    }
-
-
-    // 특정 식당 정보 조회
-    public RestaurantEntity readRestaurant(Long id) {
+    public Restaurant readRestaurant(Long id) {
         return restaurantRepository.findById(id).orElse(null);
     }
 
-    // 전체 식당 정보 조회
-    public List<RestaurantEntity> readEntireRestaurant() {
+    public List<Restaurant> readParamRestaurant(String name) {
+        // 이름이 같은 음식점들도 있으니, 이름 파라미터에 대한 모든 식당을 조회하자.
+        return restaurantRepository.findAllByName(name);
+    }
+
+
+    public List<Restaurant> readEntireRestaurant() {
         return restaurantRepository.findAll();
     }
 
-    // 식당 정보 저장
-    public void createRestaurant(Restaurant restaurant) {
-        RestaurantEntity restaurantEntity = new RestaurantEntity(restaurant);
+    public void createRestaurant(RestaurantCreateRequest restaurant) {
+        Restaurant restaurantEntity = new Restaurant(restaurant);
         restaurantRepository.save(restaurantEntity);
+    }
+
+    public void deleteRestaurant(Long id) {
+        restaurantRepository.deleteById(id);
     }
 }
