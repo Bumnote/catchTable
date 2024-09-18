@@ -1,7 +1,7 @@
 package catchtable.cooking.controller;
 
 import catchtable.cooking.dto.RestaurantCreateRequest;
-import catchtable.cooking.dto.HttpResult;
+import catchtable.cooking.dto.HttpResponse;
 import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @GetMapping("/restaurants")
-    public ResponseEntity<HttpResult> readEntireRestaurant(@RequestParam(value = "name", required = false) String name) {
+    public ResponseEntity<HttpResponse> readEntireRestaurant(@RequestParam(value = "name", required = false) String name) {
         log.info("name: {}", name);
         List<Restaurant> restaurantList;
 
@@ -30,22 +30,27 @@ public class RestaurantController {
             restaurantList = restaurantService.readParamRestaurant(name);
         }
 
-        return ResponseEntity.ok(HttpResult.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurantList));
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurantList));
     }
 
     @GetMapping("/restaurants/{id}")
-    public ResponseEntity<HttpResult> readRestaurant(@PathVariable Long id) {
+    public ResponseEntity<HttpResponse> readRestaurant(@PathVariable Long id) {
         Restaurant restaurant = restaurantService.readRestaurant(id);
-        return ResponseEntity.ok(HttpResult.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurant));
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurant));
     }
 
 
     @PostMapping("/restaurants")
-    public ResponseEntity<HttpResult> createRestaurant(@RequestBody RestaurantCreateRequest restaurantCreateRequest) {
+    public ResponseEntity<HttpResponse> createRestaurant(@RequestBody RestaurantCreateRequest restaurantCreateRequest) {
         // RequestBody로 받은 정보들을 model에 저장
         restaurantService.createRestaurant(restaurantCreateRequest);
-        return ResponseEntity.ok(HttpResult.res(HttpStatus.CREATED, HttpStatus.CREATED.toString(), restaurantCreateRequest));
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.CREATED, HttpStatus.CREATED.toString(), restaurantCreateRequest));
     }
 
+    @DeleteMapping("/restaurants/{id}")
+    public ResponseEntity<HttpResponse> deleteRestaurant(@PathVariable Long id) {
+        restaurantService.deleteRestaurant(id);
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString()));
+    }
 
 }

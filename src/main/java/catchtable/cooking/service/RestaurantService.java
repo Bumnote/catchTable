@@ -1,6 +1,8 @@
 package catchtable.cooking.service;
 
 import catchtable.cooking.dto.RestaurantCreateRequest;
+import catchtable.cooking.exception.ErrorCode;
+import catchtable.cooking.exception.IdNotExistException;
 import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.persist.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,9 @@ public class RestaurantService {
     }
 
     public void deleteRestaurant(Long id) {
+        if (!restaurantRepository.existsById(id)) {
+            throw new IdNotExistException("해당 ID의 식당이 존재하지 않습니다.", ErrorCode.RESTAURANT_ID_NOT_EXIST);
+        }
         restaurantRepository.deleteById(id);
     }
 }
