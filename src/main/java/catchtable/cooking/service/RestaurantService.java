@@ -1,5 +1,6 @@
 package catchtable.cooking.service;
 
+import catchtable.cooking.dto.RestaurantCreateParam;
 import catchtable.cooking.dto.RestaurantCreateRequest;
 import catchtable.cooking.exception.ErrorCode;
 import catchtable.cooking.exception.IdNotExistException;
@@ -30,9 +31,26 @@ public class RestaurantService {
         return restaurantRepository.findAll();
     }
 
-    public void createRestaurant(RestaurantCreateRequest restaurant) {
-        Restaurant restaurantEntity = new Restaurant(restaurant);
-        restaurantRepository.save(restaurantEntity);
+    public void createRestaurant(RestaurantCreateRequest restaurantCreateRequest) {
+        Restaurant restaurant = new Restaurant(restaurantCreateRequest);
+        restaurantRepository.save(restaurant);
+    }
+
+    public void updateRestaurant(Long id, RestaurantCreateParam restaurantCreateParam) {
+
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new IdNotExistException("해당 식당 id가 존재하지 않습니다.", ErrorCode.RESTAURANT_ID_NOT_EXIST));
+
+        Restaurant restaurantParam = Restaurant.builder()
+                .id(restaurant.getId())
+                .name(restaurantCreateParam.getName())
+                .phoneNumber(restaurantCreateParam.getPhoneNumber())
+                .address(restaurantCreateParam.getAddress())
+                .menu(restaurantCreateParam.getMenu())
+                .reviews(restaurant.getReviews())
+                .build();
+
+        restaurantRepository.save(restaurantParam);
     }
 
     public void deleteRestaurant(Long id) {

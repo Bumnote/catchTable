@@ -1,6 +1,7 @@
 package catchtable.cooking.controller;
 
 import catchtable.cooking.dto.HttpResponse;
+import catchtable.cooking.dto.ReviewCreateParam;
 import catchtable.cooking.dto.ReviewCreateRequest;
 import catchtable.cooking.exception.IdNotExistException;
 import catchtable.cooking.persist.domain.Restaurant;
@@ -34,6 +35,19 @@ public class ReviewController {
         reviewService.createReview(id, reviewCreateRequest);
         return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString(), reviewCreateRequest));
     }
+
+    @PutMapping("/restaurants/{restaurantId}/reviews/{reviewId}")
+    public ResponseEntity<HttpResponse> updateReview(@PathVariable Long restaurantId, @PathVariable Long reviewId, @RequestBody ReviewCreateRequest reviewCreateRequest) {
+
+        ReviewCreateParam reviewCreateParam = ReviewCreateParam.builder()
+                .content(reviewCreateRequest.getContent())
+                .build();
+
+        reviewService.updateReview(restaurantId, reviewId, reviewCreateParam);
+
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString()));
+    }
+
 
     @DeleteMapping("/restaurants/{restaurantId}/reviews/{reviewId}")
     public ResponseEntity<HttpResponse> deleteReview(@PathVariable Long restaurantId, @PathVariable Long reviewId) {

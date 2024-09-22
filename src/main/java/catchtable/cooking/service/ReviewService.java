@@ -1,5 +1,6 @@
 package catchtable.cooking.service;
 
+import catchtable.cooking.dto.ReviewCreateParam;
 import catchtable.cooking.dto.ReviewCreateRequest;
 import catchtable.cooking.exception.ErrorCode;
 import catchtable.cooking.exception.IdNotExistException;
@@ -37,6 +38,20 @@ public class ReviewService {
             reviewRepository.save(review);
         }
 
+    }
+
+    public void updateReview(Long restaurantId, Long reviewId, ReviewCreateParam reviewCreateParam) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new IdNotExistException("해당 식당이 존재하지 않습니다.", ErrorCode.RESTAURANT_ID_NOT_EXIST));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IdNotExistException("해당 리뷰가 존재하지 않습니다.", ErrorCode.REVIEW_Id_NOT_EXIST));
+
+        Review reviewParam = Review.builder()
+                .id(review.getId())
+                .content(reviewCreateParam.getContent())
+                .restaurant(restaurant).build();
+
+        reviewRepository.save(reviewParam);
     }
 
     public void deleteReview(Long restaurantId, Long reviewId) {
