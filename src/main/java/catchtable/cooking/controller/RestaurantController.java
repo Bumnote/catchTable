@@ -1,49 +1,62 @@
 package catchtable.cooking.controller;
 
-import catchtable.cooking.model.Restaurant;
-import catchtable.cooking.model.Result;
-import catchtable.cooking.persist.domain.RestaurantEntity;
+import catchtable.cooking.dto.RestaurantCreateRequest;
+import catchtable.cooking.dto.HttpResponse;
+import catchtable.cooking.dto.RestaurantItemResponse;
+import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.service.RestaurantService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    // 생성자 의존성 주입
-    public RestaurantController(RestaurantService restaurantService) {
-        this.restaurantService = restaurantService;
+    @GetMapping("/restaurants")
+    public ResponseEntity<HttpResponse> readEntireRestaurant(@RequestParam(value = "keyword", required = false) String keyword) {
+
+        List<Restaurant> restaurantList = restaurantService.readEntireRestaurant(keyword);
+
+        List<RestaurantItemResponse> restaurantItemResponse = restaurantList.stream()
+                .map(restaurant -> new RestaurantItemResponse(
+                        restaurant.getName(),
+                        restaurant.getPhoneNumber(),
+                        restaurant.getAddress(),
+                        restaurant.getMenu(),
+                        restaurant.getReviews()
+                )).collect(Collectors.toList());
+
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), restaurantItemResponse));
     }
 
+    @GetMapping("/restaurants/{id}")
+    public ResponseEntity<HttpResponse> readRestaurant(@PathVariable Long id) {
+        Restaurant restaurant = restaurantService.readRestaurant(id);
 
-    // 전체 식당 리스트 조회
-    @GetMapping("/restaurant/entire")
-    public ResponseEntity<Result> readEntireRestaurant() {
-        List<RestaurantEntity> restaurantEntityList = restaurantService.readEntireRestaurant();
-        return ResponseEntity.ok(Result.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurantEntityList));
+        RestaurantItemResponse restaurantItemResponse = RestaurantItemResponse.builder()
+                .name(restaurant.getName())
+                .phoneNumber(restaurant.getPhoneNumber())
+                .address(restaurant.getAddress())
+                .menu(restaurant.getMenu())
+                .reviews(restaurant.getReviews())
+                .build();
+
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), restaurantItemResponse));
     }
 
-    // 특정 식당 정보 조회 (상세 페이지)
-    @GetMapping("/restaurant/{id}")
-    public ResponseEntity<Result> readRestaurant(@PathVariable Long id) {
-        RestaurantEntity restaurantEntity = restaurantService.readRestaurant(id);
-        return ResponseEntity.ok(Result.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurantEntity));
-    }
-
-
-    // 식당 정보 저장
-    @PostMapping("/restaurant/post")
-    public ResponseEntity<Result> createRestaurant(@RequestBody Restaurant restaurant) {
-        // RequestBody로 받은 정보들을 model에 저장
-        restaurantService.createRestaurant(restaurant);
-        return ResponseEntity.ok(Result.res(HttpStatus.CREATED, HttpStatus.CREATED.toString(), restaurant));
+    @PostMapping("/restaurants")
+    public ResponseEntity<HttpResponse> createRestaurant(@RequestBody RestaurantCreateRequest restaurantCreateRequest) {
+        restaurantService.createRestaurant(restaurantCreateRequest);
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), "success"));
     }
 
 

@@ -1,4 +1,4 @@
-package catchtable.cooking.model;
+package catchtable.cooking.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -6,7 +6,7 @@ import lombok.*;
 @Data
 @Getter
 @NoArgsConstructor
-public class Restaurant {
+public class RestaurantCreateRequest {
 
     private String name;
 
