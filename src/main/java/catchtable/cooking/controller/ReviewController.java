@@ -1,6 +1,6 @@
 package catchtable.cooking.controller;
 
-import catchtable.cooking.dto.HttpResult;
+import catchtable.cooking.dto.HttpResponse;
 import catchtable.cooking.dto.ReviewCreateRequest;
 import catchtable.cooking.persist.domain.Review;
 import catchtable.cooking.service.RestaurantService;
@@ -23,18 +23,18 @@ public class ReviewController {
 
 
     @GetMapping("/restaurants/{id}/reviews")
-    public ResponseEntity<HttpResult> readReviews(@PathVariable Long id) {
+    public ResponseEntity<HttpResponse> readReviews(@PathVariable Long id) {
         List<Review> reviewEntities = reviewService.readReviews(id);
         if (reviewEntities == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok(HttpResult.res(HttpStatus.OK, HttpStatus.OK.toString(), reviewEntities));
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), reviewEntities));
     }
 
     @PostMapping("/restaurants/{id}/reviews")
-    public ResponseEntity<HttpResult> postReview(@PathVariable Long id, @RequestBody ReviewCreateRequest reviewCreateRequest) {
+    public ResponseEntity<HttpResponse> postReview(@PathVariable Long id, @RequestBody ReviewCreateRequest reviewCreateRequest) {
         reviewService.createReview(id, reviewCreateRequest);
-        return ResponseEntity.ok(HttpResult.res(HttpStatus.CREATED, HttpStatus.CREATED.toString(), reviewCreateRequest));
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.CREATED.value(), HttpStatus.CREATED.toString(), reviewCreateRequest));
     }
 
 
