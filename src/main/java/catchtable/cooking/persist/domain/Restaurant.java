@@ -1,6 +1,6 @@
 package catchtable.cooking.persist.domain;
 
-import catchtable.cooking.model.Restaurant;
+import catchtable.cooking.dto.RestaurantCreateRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestaurantEntity {
+public class Restaurant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,12 +36,12 @@ public class RestaurantEntity {
 
     // 1 : N = restaurant : review
     // @JsonIgnore
-    @OneToMany(mappedBy = "restaurantEntity", cascade = CascadeType.ALL)
-    private List<ReviewEntity> reviews = new ArrayList<>(); // 리뷰의 목록
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>(); // 리뷰의 목록
 
 
     // restaurant 객체를 받을 있는 생성자
-    public RestaurantEntity(Restaurant restaurant) {
+    public Restaurant(RestaurantCreateRequest restaurant) {
         this.name = restaurant.getName();
         this.phoneNumber = restaurant.getPhoneNumber();
         this.address = restaurant.getAddress();
