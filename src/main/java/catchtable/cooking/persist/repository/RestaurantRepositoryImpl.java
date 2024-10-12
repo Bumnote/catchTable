@@ -27,7 +27,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
     }
 
     private BooleanExpression eqKeyword(String keyword) {
-        if (keyword == null || keyword.isEmpty()) return null;
+    if (StringUtils.isBlank(keyword)) return null;
         return QRestaurant.restaurant.name.eq(keyword);
     }
 }
