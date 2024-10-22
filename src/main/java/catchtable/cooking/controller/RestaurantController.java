@@ -1,5 +1,6 @@
 package catchtable.cooking.controller;
 
+import catchtable.cooking.dto.RestaurantCreateParam;
 import catchtable.cooking.dto.RestaurantCreateRequest;
 import catchtable.cooking.dto.HttpResponse;
 import catchtable.cooking.dto.RestaurantItemResponse;
@@ -38,6 +39,15 @@ public class RestaurantController {
         return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), restaurantItemResponse));
     }
 
+    @PostMapping("/restaurants")
+    public ResponseEntity<HttpResponse> createRestaurant(@RequestBody RestaurantCreateRequest restaurantCreateRequest) {
+        // RequestBody로 받은 정보들을 model에 저장
+        restaurantService.createRestaurant(restaurantCreateRequest);
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.CREATED, HttpStatus.CREATED.toString(), restaurantCreateRequest));
+    }
+
+
+
     @GetMapping("/restaurants/{id}")
     public ResponseEntity<HttpResponse> readRestaurant(@PathVariable Long id) {
         Restaurant restaurant = restaurantService.readRestaurant(id);
@@ -59,5 +69,11 @@ public class RestaurantController {
         return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), "success"));
     }
 
+
+    @DeleteMapping("/restaurants/{id}")
+    public ResponseEntity<HttpResponse> deleteRestaurant(@PathVariable Long id) {
+        restaurantService.deleteRestaurant(id);
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString()));
+    }
 
 }

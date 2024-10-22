@@ -9,6 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class HttpResponse<T> {
 
+
     private int status;
     private String message;
     private T data;
@@ -18,6 +19,7 @@ public class HttpResponse<T> {
         this.message = message;
         this.data = null;
     }
+
 
     public static <T> HttpResponse<T> res(final int status, final String message) {
         return res(status, message, null);

@@ -3,9 +3,11 @@ package catchtable.cooking.dto;
 import lombok.*;
 
 @Data
-@Getter
+@Builder
 @NoArgsConstructor
-public class ReviewCreateRequest {
+@AllArgsConstructor
+@Getter
+public class ReviewCreateParam {
 
     private String content;
 }

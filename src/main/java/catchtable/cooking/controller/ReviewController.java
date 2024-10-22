@@ -2,8 +2,10 @@ package catchtable.cooking.controller;
 
 import catchtable.cooking.dto.HttpResponse;
 import catchtable.cooking.dto.ReviewCreateRequest;
+import catchtable.cooking.exception.IdNotExistException;
+import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.persist.domain.Review;
-import catchtable.cooking.service.RestaurantService;
+import catchtable.cooking.persist.repository.RestaurantRepository;
 import catchtable.cooking.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +21,10 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final RestaurantService restaurantService;
-
 
     @GetMapping("/restaurants/{id}/reviews")
     public ResponseEntity<HttpResponse> readReviews(@PathVariable Long id) {
+
         List<Review> reviewEntities = reviewService.readReviews(id);
         if (reviewEntities == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -34,8 +35,8 @@ public class ReviewController {
     @PostMapping("/restaurants/{id}/reviews")
     public ResponseEntity<HttpResponse> postReview(@PathVariable Long id, @RequestBody ReviewCreateRequest reviewCreateRequest) {
         reviewService.createReview(id, reviewCreateRequest);
+
         return ResponseEntity.ok(HttpResponse.res(HttpStatus.CREATED.value(), HttpStatus.CREATED.toString(), reviewCreateRequest));
     }
-
 
 }
