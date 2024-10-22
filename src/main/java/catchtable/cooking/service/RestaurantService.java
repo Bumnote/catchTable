@@ -21,14 +21,8 @@ public class RestaurantService {
         return restaurantRepository.findById(id).orElse(null);
     }
 
-    public List<Restaurant> readParamRestaurant(String name) {
-        // 이름이 같은 음식점들도 있으니, 이름 파라미터에 대한 모든 식당을 조회하자.
-        return restaurantRepository.findAllByName(name);
-    }
-
-
-    public List<Restaurant> readEntireRestaurant() {
-        return restaurantRepository.findAll();
+    public List<Restaurant> readEntireRestaurant(String keyword) {
+        return restaurantRepository.getRestaurants(keyword);
     }
 
     public void createRestaurant(RestaurantCreateRequest restaurantCreateRequest) {

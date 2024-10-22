@@ -3,6 +3,7 @@ package catchtable.cooking.controller;
 import catchtable.cooking.dto.RestaurantCreateParam;
 import catchtable.cooking.dto.RestaurantCreateRequest;
 import catchtable.cooking.dto.HttpResponse;
+import catchtable.cooking.dto.RestaurantItemResponse;
 import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -21,17 +23,20 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @GetMapping("/restaurants")
-    public ResponseEntity<HttpResponse> readEntireRestaurant(@RequestParam(value = "name", required = false) String name) {
-        log.info("name: {}", name);
-        List<Restaurant> restaurantList;
+    public ResponseEntity<HttpResponse> readEntireRestaurant(@RequestParam(value = "keyword", required = false) String keyword) {
 
-        if (name == null) {
-            restaurantList = restaurantService.readEntireRestaurant();
-        } else {
-            restaurantList = restaurantService.readParamRestaurant(name);
-        }
+        List<Restaurant> restaurantList = restaurantService.readEntireRestaurant(keyword);
 
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurantList));
+        List<RestaurantItemResponse> restaurantItemResponse = restaurantList.stream()
+                .map(restaurant -> new RestaurantItemResponse(
+                        restaurant.getName(),
+                        restaurant.getPhoneNumber(),
+                        restaurant.getAddress(),
+                        restaurant.getMenu(),
+                        restaurant.getReviews()
+                )).collect(Collectors.toList());
+
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), restaurantItemResponse));
     }
 
     @PostMapping("/restaurants")
@@ -46,20 +51,22 @@ public class RestaurantController {
     @GetMapping("/restaurants/{id}")
     public ResponseEntity<HttpResponse> readRestaurant(@PathVariable Long id) {
         Restaurant restaurant = restaurantService.readRestaurant(id);
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString(), restaurant));
-    }
 
-    @PutMapping("/restaurants/{id}")
-    public ResponseEntity<HttpResponse> updateRestaurant(@PathVariable Long id, @RequestBody RestaurantCreateRequest restaurantCreateRequest) {
-        RestaurantCreateParam restaurantCreateParam = RestaurantCreateParam.builder()
-                .name(restaurantCreateRequest.getName())
-                .phoneNumber(restaurantCreateRequest.getPhoneNumber())
-                .address(restaurantCreateRequest.getAddress())
-                .menu(restaurantCreateRequest.getMenu())
+        RestaurantItemResponse restaurantItemResponse = RestaurantItemResponse.builder()
+                .name(restaurant.getName())
+                .phoneNumber(restaurant.getPhoneNumber())
+                .address(restaurant.getAddress())
+                .menu(restaurant.getMenu())
+                .reviews(restaurant.getReviews())
                 .build();
 
-        restaurantService.updateRestaurant(id, restaurantCreateParam);
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString()));
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), restaurantItemResponse));
+    }
+
+    @PostMapping("/restaurants")
+    public ResponseEntity<HttpResponse> createRestaurant(@RequestBody RestaurantCreateRequest restaurantCreateRequest) {
+        restaurantService.createRestaurant(restaurantCreateRequest);
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), "success"));
     }
 
 

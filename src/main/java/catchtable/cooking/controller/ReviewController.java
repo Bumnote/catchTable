@@ -1,7 +1,6 @@
 package catchtable.cooking.controller;
 
 import catchtable.cooking.dto.HttpResponse;
-import catchtable.cooking.dto.ReviewCreateParam;
 import catchtable.cooking.dto.ReviewCreateRequest;
 import catchtable.cooking.exception.IdNotExistException;
 import catchtable.cooking.persist.domain.Restaurant;
@@ -25,35 +24,19 @@ public class ReviewController {
 
     @GetMapping("/restaurants/{id}/reviews")
     public ResponseEntity<HttpResponse> readReviews(@PathVariable Long id) {
-        List<Review> reviews = reviewService.readReviews(id);
 
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString(), reviews));
+        List<Review> reviewEntities = reviewService.readReviews(id);
+        if (reviewEntities == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), reviewEntities));
     }
 
     @PostMapping("/restaurants/{id}/reviews")
     public ResponseEntity<HttpResponse> postReview(@PathVariable Long id, @RequestBody ReviewCreateRequest reviewCreateRequest) {
         reviewService.createReview(id, reviewCreateRequest);
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString(), reviewCreateRequest));
+
+        return ResponseEntity.ok(HttpResponse.res(HttpStatus.CREATED.value(), HttpStatus.CREATED.toString(), reviewCreateRequest));
     }
-
-    @PutMapping("/restaurants/{restaurantId}/reviews/{reviewId}")
-    public ResponseEntity<HttpResponse> updateReview(@PathVariable Long restaurantId, @PathVariable Long reviewId, @RequestBody ReviewCreateRequest reviewCreateRequest) {
-
-        ReviewCreateParam reviewCreateParam = ReviewCreateParam.builder()
-                .content(reviewCreateRequest.getContent())
-                .build();
-
-        reviewService.updateReview(restaurantId, reviewId, reviewCreateParam);
-
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString()));
-    }
-
-
-    @DeleteMapping("/restaurants/{restaurantId}/reviews/{reviewId}")
-    public ResponseEntity<HttpResponse> deleteReview(@PathVariable Long restaurantId, @PathVariable Long reviewId) {
-        reviewService.deleteReview(restaurantId, reviewId);
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK, HttpStatus.OK.toString()));
-    }
-
 
 }
