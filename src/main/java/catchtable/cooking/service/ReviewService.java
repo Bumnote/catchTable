@@ -2,8 +2,8 @@ package catchtable.cooking.service;
 
 import catchtable.cooking.dto.ReviewCreateParam;
 import catchtable.cooking.dto.ReviewCreateRequest;
-import catchtable.cooking.exception.ErrorCode;
-import catchtable.cooking.exception.IdNotExistException;
+import catchtable.cooking.exception.Code;
+import catchtable.cooking.exception.CustomException;
 import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.persist.domain.Review;
 import catchtable.cooking.persist.repository.RestaurantRepository;
@@ -42,9 +42,9 @@ public class ReviewService {
 
     public void updateReview(Long restaurantId, Long reviewId, ReviewCreateParam reviewCreateParam) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IdNotExistException("해당 식당이 존재하지 않습니다.", ErrorCode.RESTAURANT_ID_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST));
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IdNotExistException("해당 리뷰가 존재하지 않습니다.", ErrorCode.REVIEW_Id_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(Code.REVIEW_Id_NOT_EXIST));
 
         Review reviewParam = Review.builder()
                 .id(review.getId())
@@ -56,9 +56,9 @@ public class ReviewService {
 
     public void deleteReview(Long restaurantId, Long reviewId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IdNotExistException("해당 식당이 존재하지 않습니다.", ErrorCode.RESTAURANT_ID_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST));
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IdNotExistException("해당 리뷰가 존재하지 않습니다.", ErrorCode.REVIEW_Id_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(Code.REVIEW_Id_NOT_EXIST));
         reviewRepository.delete(review);
     }
 }

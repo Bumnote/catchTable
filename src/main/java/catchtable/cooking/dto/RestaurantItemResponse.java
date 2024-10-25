@@ -18,7 +18,6 @@ public class RestaurantItemResponse {
 
     private String name;
 
-    @JsonProperty("phone_number")
     private String phoneNumber;
 
     private String address;

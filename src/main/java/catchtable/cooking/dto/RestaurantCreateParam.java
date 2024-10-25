@@ -12,11 +12,17 @@ public class RestaurantCreateParam {
 
     private String name;
 
-    @JsonProperty("phone_number")
     private String phoneNumber;
 
     private String address;
 
     private String menu;
+
+    public RestaurantCreateParam(RestaurantCreateRequest request) {
+        this.name = request.getName();
+        this.phoneNumber = request.getPhoneNumber();
+        this.address = request.getAddress();
+        this.menu = request.getMenu();
+    }
 
 }
