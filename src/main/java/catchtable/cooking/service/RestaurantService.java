@@ -5,11 +5,13 @@ import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.persist.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;

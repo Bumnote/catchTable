@@ -31,7 +31,7 @@ public class RestaurantController {
                         restaurant.getName(),
                         restaurant.getPhoneNumber(),
                         restaurant.getAddress(),
-                        restaurant.getMenu(),
+                        restaurant.getMenus(),
                         restaurant.getReviews()
                 )).collect(Collectors.toList());
 
@@ -46,7 +46,6 @@ public class RestaurantController {
                 .name(restaurant.getName())
                 .phoneNumber(restaurant.getPhoneNumber())
                 .address(restaurant.getAddress())
-                .menu(restaurant.getMenu())
                 .reviews(restaurant.getReviews())
                 .build();
 
