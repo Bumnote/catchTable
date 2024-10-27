@@ -10,7 +10,6 @@ public class RestaurantCreateRequest {
 
     private String name;
 
-    @JsonProperty("phone_number")
     private String phoneNumber;
 
     private String address;

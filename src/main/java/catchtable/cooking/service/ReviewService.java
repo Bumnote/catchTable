@@ -1,6 +1,9 @@
 package catchtable.cooking.service;
 
+import catchtable.cooking.dto.ReviewCreateParam;
 import catchtable.cooking.dto.ReviewCreateRequest;
+import catchtable.cooking.exception.Code;
+import catchtable.cooking.exception.CustomException;
 import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.persist.domain.Review;
 import catchtable.cooking.persist.repository.RestaurantRepository;
@@ -20,8 +23,6 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final RestaurantRepository restaurantRepository;
 
-
-    // 하나의 식당에 대한 전체 리뷰 리스트 return
     public List<Review> readReviews(Long id) {
         Optional<Restaurant> restaurantEntity = restaurantRepository.findById(id);
         if (restaurantEntity.isPresent() && restaurantEntity.get().getReviews() != null) {
@@ -31,18 +32,35 @@ public class ReviewService {
         }
     }
 
-    // 리뷰 작성
     public void createReview(Long id, ReviewCreateRequest reviewCreateRequest) {
-        Optional<Restaurant> restaurantEntity = restaurantRepository.findById(id);
+        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
 
-        if (restaurantEntity.isPresent()) {
-            Review review = new Review(restaurantEntity.get(), reviewCreateRequest);
-            restaurantEntity.get().getReviews().add(review);
-
-            restaurantRepository.save(restaurantEntity.get());
+        if (restaurant.isPresent()) {
+            Review review = new Review(restaurant.get(), reviewCreateRequest);
             reviewRepository.save(review);
         }
 
+    }
 
+    public void updateReview(Long restaurantId, Long reviewId, ReviewCreateParam reviewCreateParam) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(Code.REVIEW_Id_NOT_EXIST));
+
+        Review reviewParam = Review.builder()
+                .id(review.getId())
+                .content(reviewCreateParam.getContent())
+                .restaurant(restaurant).build();
+
+        reviewRepository.save(reviewParam);
+    }
+
+    public void deleteReview(Long restaurantId, Long reviewId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(Code.REVIEW_Id_NOT_EXIST));
+        reviewRepository.delete(review);
     }
 }

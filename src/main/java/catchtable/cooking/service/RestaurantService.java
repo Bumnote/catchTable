@@ -1,6 +1,9 @@
 package catchtable.cooking.service;
 
+import catchtable.cooking.dto.RestaurantCreateParam;
 import catchtable.cooking.dto.RestaurantCreateRequest;
+import catchtable.cooking.exception.Code;
+import catchtable.cooking.exception.CustomException;
 import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.persist.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +27,32 @@ public class RestaurantService {
         return restaurantRepository.getRestaurants(keyword);
     }
 
-    public void createRestaurant(RestaurantCreateRequest restaurant) {
-        Restaurant restaurantEntity = new Restaurant(restaurant);
-        restaurantRepository.save(restaurantEntity);
+    public void createRestaurant(RestaurantCreateRequest restaurantCreateRequest) {
+        Restaurant restaurant = new Restaurant(restaurantCreateRequest);
+        restaurantRepository.save(restaurant);
+    }
+
+    public void updateRestaurant(Long id, RestaurantCreateParam restaurantCreateParam) {
+
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST));
+
+        Restaurant restaurantParam = Restaurant.builder()
+                .id(restaurant.getId())
+                .name(restaurantCreateParam.getName())
+                .phoneNumber(restaurantCreateParam.getPhoneNumber())
+                .address(restaurantCreateParam.getAddress())
+                .menu(restaurantCreateParam.getMenu())
+                .reviews(restaurant.getReviews())
+                .build();
+
+        restaurantRepository.save(restaurantParam);
     }
 
     public void deleteRestaurant(Long id) {
+        if (!restaurantRepository.existsById(id)) {
+            throw new CustomException(Code.RESTAURANT_ID_NOT_EXIST);
+        }
         restaurantRepository.deleteById(id);
     }
 }

@@ -4,6 +4,7 @@ import catchtable.cooking.persist.domain.QRestaurant;
 import catchtable.cooking.persist.domain.Restaurant;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +28,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
     }
 
     private BooleanExpression eqKeyword(String keyword) {
-        if (keyword == null || keyword.isEmpty()) return null;
+        if (StringUtils.isBlank(keyword)) return null;
         return QRestaurant.restaurant.name.eq(keyword);
     }
 }

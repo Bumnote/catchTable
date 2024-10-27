@@ -1,14 +1,10 @@
 package catchtable.cooking.controller;
 
-import catchtable.cooking.dto.RestaurantCreateRequest;
-import catchtable.cooking.dto.HttpResponse;
-import catchtable.cooking.dto.RestaurantItemResponse;
+import catchtable.cooking.dto.*;
 import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,10 +18,9 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @GetMapping("/restaurants")
-    public ResponseEntity<HttpResponse> readEntireRestaurant(@RequestParam(value = "keyword", required = false) String keyword) {
+    public CommonResponse<?> readEntireRestaurant(@RequestParam(value = "keyword", required = false) String keyword) {
 
         List<Restaurant> restaurantList = restaurantService.readEntireRestaurant(keyword);
-
         List<RestaurantItemResponse> restaurantItemResponse = restaurantList.stream()
                 .map(restaurant -> new RestaurantItemResponse(
                         restaurant.getName(),
@@ -35,28 +30,34 @@ public class RestaurantController {
                         restaurant.getReviews()
                 )).collect(Collectors.toList());
 
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), restaurantItemResponse));
-    }
-
-    @GetMapping("/restaurants/{id}")
-    public ResponseEntity<HttpResponse> readRestaurant(@PathVariable Long id) {
-        Restaurant restaurant = restaurantService.readRestaurant(id);
-
-        RestaurantItemResponse restaurantItemResponse = RestaurantItemResponse.builder()
-                .name(restaurant.getName())
-                .phoneNumber(restaurant.getPhoneNumber())
-                .address(restaurant.getAddress())
-                .reviews(restaurant.getReviews())
-                .build();
-
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), restaurantItemResponse));
+        return CommonResponse.of(restaurantItemResponse);
     }
 
     @PostMapping("/restaurants")
-    public ResponseEntity<HttpResponse> createRestaurant(@RequestBody RestaurantCreateRequest restaurantCreateRequest) {
+    public CommonResponse<?> createRestaurant(@RequestBody RestaurantCreateRequest restaurantCreateRequest) {
         restaurantService.createRestaurant(restaurantCreateRequest);
-        return ResponseEntity.ok(HttpResponse.res(HttpStatus.OK.value(), HttpStatus.OK.toString(), "success"));
+        return CommonResponse.of("success");
     }
 
+
+    @GetMapping("/restaurants/{id}")
+    public CommonResponse<?> readRestaurant(@PathVariable Long id) {
+        Restaurant restaurant = restaurantService.readRestaurant(id);
+        return CommonResponse.of(restaurant);
+    }
+
+
+    @PutMapping("/restaurants/{id}")
+    public CommonResponse<?> updateRestaurant(@PathVariable Long id, @RequestBody RestaurantCreateRequest restaurantCreateRequest) {
+
+        restaurantService.updateRestaurant(id, new RestaurantCreateParam(restaurantCreateRequest));
+        return CommonResponse.of("success");
+    }
+
+    @DeleteMapping("/restaurants/{id}")
+    public CommonResponse<?> deleteRestaurant(@PathVariable Long id) {
+        restaurantService.deleteRestaurant(id);
+        return CommonResponse.of("success");
+    }
 
 }
