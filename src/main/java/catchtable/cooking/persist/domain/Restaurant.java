@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,39 +14,41 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Restaurant {
+public class Restaurant extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "restaurant_id")
-    private Long id; // PK
+    private Long id;
 
-    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "phone_number", nullable = false)
-    @JsonProperty("phone_number")
     private String phoneNumber;
 
-    @Column(name = "address", nullable = false)
     private String address;
 
+    private Long createdBy;
 
-    @Column(name = "menu", nullable = false)
-    private String menu;
+    private Long updatedBy;
+
+    private LocalDateTime deleteDateTime;
 
     // 1 : N = restaurant : review
-    // @JsonIgnore
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>(); // 리뷰의 목록
 
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    private List<Waiting> waitings = new ArrayList<>();
 
-    // restaurant 객체를 받을 있는 생성자
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    private List<Reservation> reservations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    private List<Menu> menus = new ArrayList<>();
+
     public Restaurant(RestaurantCreateRequest restaurant) {
         this.name = restaurant.getName();
         this.phoneNumber = restaurant.getPhoneNumber();
         this.address = restaurant.getAddress();
-        this.menu = restaurant.getMenu();
     }
 
 }

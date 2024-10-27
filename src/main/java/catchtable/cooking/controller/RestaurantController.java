@@ -26,7 +26,7 @@ public class RestaurantController {
                         restaurant.getName(),
                         restaurant.getPhoneNumber(),
                         restaurant.getAddress(),
-                        restaurant.getMenu(),
+                        restaurant.getMenus(),
                         restaurant.getReviews()
                 )).collect(Collectors.toList());
 
@@ -45,6 +45,7 @@ public class RestaurantController {
         Restaurant restaurant = restaurantService.readRestaurant(id);
         return CommonResponse.of(restaurant);
     }
+
 
     @PutMapping("/restaurants/{id}")
     public CommonResponse<?> updateRestaurant(@PathVariable Long id, @RequestBody RestaurantCreateRequest restaurantCreateRequest) {
