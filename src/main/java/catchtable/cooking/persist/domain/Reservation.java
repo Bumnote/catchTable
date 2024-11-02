@@ -22,7 +22,7 @@ public class Reservation extends BaseTimeEntity {
 
     private LocalDateTime time;
 
-    private LocalDateTime deleteDateTime;
+    private LocalDateTime deletedDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

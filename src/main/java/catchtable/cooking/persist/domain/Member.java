@@ -31,7 +31,7 @@ public class Member extends BaseTimeEntity {
 
     private Long updatedBy;
 
-    private LocalDateTime deleteDateTime;
+    private LocalDateTime deletedDateTime;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Reservation> reservation = new ArrayList<>();

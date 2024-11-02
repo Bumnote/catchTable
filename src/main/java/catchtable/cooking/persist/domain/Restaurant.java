@@ -1,9 +1,11 @@
 package catchtable.cooking.persist.domain;
 
 import catchtable.cooking.dto.RestaurantCreateRequest;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class Restaurant extends BaseTimeEntity {
 
     private Long updatedBy;
 
-    private LocalDateTime deleteDateTime;
+    private LocalDateTime deletedDateTime;
 
     // 1 : N = restaurant : review
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
