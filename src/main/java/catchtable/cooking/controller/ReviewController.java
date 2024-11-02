@@ -29,7 +29,7 @@ public class ReviewController {
     @PostMapping("/restaurants/{id}/reviews")
     public CommonResponse<?> postReview(@PathVariable Long id, @RequestBody ReviewCreateRequest reviewCreateRequest) {
         reviewService.createReview(id, reviewCreateRequest);
-        return CommonResponse.of(reviewCreateRequest);
+        return CommonResponse.of(Code.OK);
     }
 
     @PutMapping("/restaurants/{restaurantId}/reviews/{reviewId}")
