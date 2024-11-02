@@ -1,6 +1,7 @@
 package catchtable.cooking.controller;
 
 import catchtable.cooking.dto.*;
+import catchtable.cooking.exception.Code;
 import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class RestaurantController {
     @PostMapping("/restaurants")
     public CommonResponse<?> createRestaurant(@RequestBody RestaurantCreateRequest restaurantCreateRequest) {
         restaurantService.createRestaurant(restaurantCreateRequest);
-        return CommonResponse.of("success");
+        return CommonResponse.of(Code.OK);
     }
 
 
@@ -51,13 +52,13 @@ public class RestaurantController {
     public CommonResponse<?> updateRestaurant(@PathVariable Long id, @RequestBody RestaurantCreateRequest restaurantCreateRequest) {
 
         restaurantService.updateRestaurant(id, new RestaurantCreateParam(restaurantCreateRequest));
-        return CommonResponse.of("success");
+        return CommonResponse.of(Code.OK);
     }
 
     @DeleteMapping("/restaurants/{id}")
     public CommonResponse<?> deleteRestaurant(@PathVariable Long id) {
         restaurantService.deleteRestaurant(id);
-        return CommonResponse.of("success");
+        return CommonResponse.of(Code.OK);
     }
 
 }
