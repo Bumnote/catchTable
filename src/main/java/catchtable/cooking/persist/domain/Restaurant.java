@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "RESTAURANT")
+@Entity
 @Builder
 @Getter
 @NoArgsConstructor
@@ -34,9 +34,8 @@ public class Restaurant extends BaseTimeEntity {
 
     private LocalDateTime deletedDateTime;
 
-    // 1 : N = restaurant : review
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
-    private List<Review> reviews = new ArrayList<>(); // 리뷰의 목록
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     private List<Waiting> waitings = new ArrayList<>();

@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "reservation")
 public class Reservation extends BaseTimeEntity {
 
     @Id

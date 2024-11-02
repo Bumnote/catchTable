@@ -34,12 +34,12 @@ public class Member extends BaseTimeEntity {
     private LocalDateTime deletedDateTime;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Reservation> reservation = new ArrayList<>();
+    private List<Reservation> reservations = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Waiting> waiting = new ArrayList<>();
+    private List<Waiting> waitings = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Review> review = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
 }
