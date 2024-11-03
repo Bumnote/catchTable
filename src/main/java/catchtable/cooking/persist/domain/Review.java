@@ -1,13 +1,13 @@
 package catchtable.cooking.persist.domain;
 
 import catchtable.cooking.dto.ReviewCreateRequest;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
-@Entity(name = "REVIEW")
+@Entity
 @Builder
 @Getter
 @NoArgsConstructor
@@ -18,17 +18,14 @@ public class Review extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "content")
     private String content;
 
     private Long createdBy;
 
     private Long updatedBy;
 
-    // N : 1 = review : restaurant
-    @ManyToOne(fetch = FetchType.LAZY) // 지연로딩으로 설정
-    @JoinColumn(name = "restaurant_id") // 외래키 설정
-    @JsonIgnore // ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)

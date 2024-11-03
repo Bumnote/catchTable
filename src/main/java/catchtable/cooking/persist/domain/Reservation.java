@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "reservation")
 public class Reservation extends BaseTimeEntity {
 
     @Id
@@ -22,7 +21,7 @@ public class Reservation extends BaseTimeEntity {
 
     private LocalDateTime time;
 
-    private LocalDateTime deleteDateTime;
+    private LocalDateTime deletedDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
