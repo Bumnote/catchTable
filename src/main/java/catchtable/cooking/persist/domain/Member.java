@@ -1,9 +1,6 @@
 package catchtable.cooking.persist.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTimeEntity  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +25,16 @@ public class Member extends BaseTimeEntity {
 
     private String email;
 
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private MemberType role;
+
     private Long createdBy;
 
     private Long updatedBy;
 
     private LocalDateTime deletedDateTime;
+
 
 }
