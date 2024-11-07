@@ -16,6 +16,8 @@ public enum Code {
     INVALID_LENGTH_PASSWORD(1003, "비밀번호는 8자 ~ 15자까지 가능합니다."),
     INVALID_PHONE_NUMBER(1004, "휴대폰 번호 형식이 잘못되었습니다."),
     ALREADY_EXIST_NICKNAME(1005, "이미 사용중인 닉네임입니다."),
+    NOT_EXIST_NICKNAME(1006, "존재하지 않는 닉네임입니다. 다시 입력해주세요."),
+    UNMATCHED_PASSWORD(1007, "비밀번호가 일치하지 않습니다."),
 
     // JWT Token Exception Code
     INVALID_ACCESS_TOKEN(2000, "잘못된 ACCESS_JWT 서명입니다."),
