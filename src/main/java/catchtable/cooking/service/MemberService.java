@@ -1,14 +1,14 @@
 package catchtable.cooking.service;
 
-import catchtable.cooking.dto.Authentication;
-import catchtable.cooking.dto.JwtToken;
-import catchtable.cooking.dto.LoginCreateParam;
-import catchtable.cooking.dto.MemberCreateParam;
+import catchtable.cooking.dto.*;
 import catchtable.cooking.exception.Code;
 import catchtable.cooking.exception.CustomException;
 import catchtable.cooking.jwt.JwtTokenProvider;
 import catchtable.cooking.persist.domain.Member;
+import catchtable.cooking.persist.domain.RefreshToken;
 import catchtable.cooking.persist.repository.MemberRepository;
+import catchtable.cooking.persist.repository.RefreshTokenRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +21,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     public void register(MemberCreateParam param) {
@@ -51,7 +52,58 @@ public class MemberService {
             throw new CustomException(Code.UNMATCHED_PASSWORD);
         }
 
-        return jwtTokenProvider.generateToken(new Authentication().of(member));
+        JwtToken jwtToken = jwtTokenProvider.generateToken(new Authentication().of(member));
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .key(member.getNickname())
+                .value(jwtToken.getRefreshToken())
+                .build();
+
+        refreshTokenRepository.save(refreshToken);
+        return jwtToken;
+    }
+
+    public JwtToken reissue(TokenCreateParam param, HttpServletResponse response) {
+
+        // 1. Refersh Token 검증
+        if (!jwtTokenProvider.validateToken(param.getRefreshToken())) {
+            throw new CustomException(Code.REFRESH_TOKEN_UNAUTHORIZED);
+        }
+
+        log.info("accessToken: {}", param.getAccessToken());
+        log.info("refreshToken: {}", param.getRefreshToken());
+        // 2. Access Token 에서 nickname 가져오고, set
+        String nickname = jwtTokenProvider.getSubject(param.getAccessToken());
+
+        log.info("nickname : {}", nickname);
+
+        // 3. 저장소에서 nickname 를 기반으로 Refresh Token 값 가져옴
+        RefreshToken refreshToken = refreshTokenRepository.findByNickname(param.getRefreshToken())
+                .orElseThrow(() -> new CustomException(Code.EXPIRED_REFRESH_TOKEN));
+
+        log.info("refreshToken : {}", refreshToken.getRefreshToken());
+        log.info("refreshToken key : {}", refreshToken.getKey());
+
+        // 4. Refresh Token 일치 검사
+        if (!refreshToken.getValue().equals(param.getRefreshToken())) {
+            throw new CustomException(Code.REFRESH_TOKEN_UNMATCHED);
+        }
+
+        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new CustomException(Code.NOT_EXIST_NICKNAME)
+        );
+
+        // 5. 새로운 토큰 생성
+        JwtToken jwtToken = jwtTokenProvider.generateToken(new Authentication().of(member));
+
+        // 6. 저장소 정보 업데이트
+        RefreshToken newRefreshToken = refreshToken.updateValue(jwtToken.getRefreshToken());
+
+        refreshTokenRepository.save(newRefreshToken);
+
+        // 7. 토큰 발급
+        return jwtToken;
+
     }
 
     private void MemberNicknameValidate(String nickname) {
@@ -72,5 +124,4 @@ public class MemberService {
             throw new CustomException(Code.INVALID_PHONE_NUMBER);
         }
     }
-
 }

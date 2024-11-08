@@ -111,11 +111,7 @@ public class JwtTokenProvider {
     }
 
     public String getSubject(final String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return parseClaims(token).getSubject();
     }
+
 }
