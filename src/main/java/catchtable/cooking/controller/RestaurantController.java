@@ -1,15 +1,16 @@
 package catchtable.cooking.controller;
 
-import catchtable.cooking.dto.*;
+import catchtable.cooking.dto.CommonResponse;
+import catchtable.cooking.dto.RestaurantCreateParam;
+import catchtable.cooking.dto.RestaurantCreateRequest;
+import catchtable.cooking.dto.RestaurantItemResponse;
 import catchtable.cooking.exception.Code;
-import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -19,19 +20,11 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @GetMapping("/restaurants")
-    public CommonResponse<?> readEntireRestaurant(@RequestParam(value = "keyword", required = false) String keyword) {
+    public CommonResponse<?> readRestaurants(@RequestParam(value = "keyword", required = false) String keyword) {
 
-        List<Restaurant> restaurantList = restaurantService.readEntireRestaurant(keyword);
-        List<RestaurantItemResponse> restaurantItemResponse = restaurantList.stream()
-                .map(restaurant -> new RestaurantItemResponse(
-                        restaurant.getName(),
-                        restaurant.getPhoneNumber(),
-                        restaurant.getAddress(),
-                        restaurant.getMenus(),
-                        restaurant.getReviews()
-                )).collect(Collectors.toList());
+        List<RestaurantItemResponse> restaurantItemResponses = restaurantService.readRestaurants(keyword);
 
-        return CommonResponse.of(restaurantItemResponse);
+        return CommonResponse.of(restaurantItemResponses);
     }
 
     @PostMapping("/restaurants")
@@ -43,8 +36,8 @@ public class RestaurantController {
 
     @GetMapping("/restaurants/{id}")
     public CommonResponse<?> readRestaurant(@PathVariable Long id) {
-        Restaurant restaurant = restaurantService.readRestaurant(id);
-        return CommonResponse.of(restaurant);
+        RestaurantItemResponse restaurantItemResponse = restaurantService.readRestaurant(id);
+        return CommonResponse.of(restaurantItemResponse);
     }
 
 

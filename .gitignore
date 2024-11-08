@@ -39,3 +39,4 @@ out/
 ### personal info ###
 *.yml
 /src/main/generated/
+*/img
