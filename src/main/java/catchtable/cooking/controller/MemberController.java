@@ -30,6 +30,14 @@ public class MemberController {
         return CommonResponse.of(jwtToken);
     }
 
+    @PostMapping("/api/member/logout")
+    public CommonResponse<?> logout(@RequestHeader("Authorization") String token) {
+
+        memberService.logout(token);
+        return CommonResponse.of(Code.OK);
+    }
+
+
     @PostMapping("/api/member/reissue")
     public CommonResponse<?> reissue(@RequestBody TokenRequest tokenRequest,
                                      HttpServletResponse response) {

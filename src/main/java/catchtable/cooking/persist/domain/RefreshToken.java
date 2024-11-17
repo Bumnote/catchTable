@@ -11,13 +11,13 @@ import org.springframework.data.redis.core.index.Indexed;
 public class RefreshToken {
 
     @Id
-    private String key;
+    private Long key;
 
     @Indexed
     private String value;
 
     @Builder
-    public RefreshToken(String key, String value) {
+    public RefreshToken(Long key, String value) {
         this.key = key;
         this.value = value;
     }
@@ -27,7 +27,7 @@ public class RefreshToken {
         return this;
     }
 
-    public String getNickname() {
+    public Long getId() {
         return key;
     }
 
