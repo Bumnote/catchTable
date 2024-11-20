@@ -1,18 +1,18 @@
 package catchtable.cooking.service;
 
-import catchtable.cooking.dto.RestaurantCreateParam;
-import catchtable.cooking.dto.RestaurantCreateRequest;
-import catchtable.cooking.dto.RestaurantItemResponse;
+import catchtable.cooking.dto.*;
 import catchtable.cooking.exception.Code;
 import catchtable.cooking.exception.CustomException;
 import catchtable.cooking.persist.domain.*;
 import catchtable.cooking.persist.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -29,10 +29,18 @@ public class RestaurantService {
                 () -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST)
         );
 
-        List<Menu> menus = menuRepository.findAllByRestaurantId(id);
-        List<Review> reviews = reviewRepository.findAllByRestaurantId(id);
-        List<Waiting> waitings = waitingRepository.findAllByRestaurantId(id);
-        List<Reservation> reservations = reservationRepository.findAllByRestaurantId(id);
+        List<MenuItemResponse> menus = menuRepository.findAllByRestaurant(restaurant).stream()
+                .map(MenuItemResponse::of)
+                .toList();
+        List<ReviewItemResponse> reviews = reviewRepository.findAllByRestaurant(restaurant).stream()
+                .map(ReviewItemResponse::of)
+                .toList();
+        List<WaitingItemResponse> waitings = waitingRepository.findAllByRestaurant(restaurant).stream()
+                .map(WaitingItemResponse::of)
+                .toList();
+        List<ReservationItemResponse> reservations = reservationRepository.findAllByRestaurant(restaurant).stream()
+                .map(ReservationItemResponse::of)
+                .toList();
 
         return RestaurantItemResponse.builder()
                 .name(restaurant.getName())
@@ -41,32 +49,12 @@ public class RestaurantService {
                 .menus(menus)
                 .reviews(reviews)
                 .waitings(waitings)
-                .reservations(reservations).build();
+                .reservations(reservations)
+                .build();
     }
 
     public List<RestaurantItemResponse> readRestaurants(String keyword) {
-        List<Restaurant> restaurants = restaurantRepository.getRestaurants(keyword);
-
-        List<RestaurantItemResponse> restaurantItemResponses = restaurants.stream()
-                .map(restaurant -> {
-                    Long id = restaurant.getId();
-
-                    List<Menu> menus = menuRepository.findAllByRestaurantId(id);
-                    List<Review> reviews = reviewRepository.findAllByRestaurantId(id);
-                    List<Waiting> waitings = waitingRepository.findAllByRestaurantId(id);
-                    List<Reservation> reservations = reservationRepository.findAllByRestaurantId(id);
-
-                    return RestaurantItemResponse.builder()
-                            .name(restaurant.getName())
-                            .address(restaurant.getAddress())
-                            .phoneNumber(restaurant.getPhoneNumber())
-                            .menus(menus)
-                            .reviews(reviews)
-                            .waitings(waitings)
-                            .reservations(reservations).build();
-                }).toList();
-
-        return restaurantItemResponses;
+        return restaurantRepository.getRestaurants(keyword);
     }
 
     public void createRestaurant(RestaurantCreateRequest restaurantCreateRequest) {
