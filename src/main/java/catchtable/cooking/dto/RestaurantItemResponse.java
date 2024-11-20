@@ -1,7 +1,5 @@
 package catchtable.cooking.dto;
 
-import catchtable.cooking.persist.domain.Menu;
-import catchtable.cooking.persist.domain.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,13 +16,16 @@ public class RestaurantItemResponse {
 
     private String name;
 
-    private String phoneNumber;
-
     private String address;
 
-    private List<Menu> menus = new ArrayList<>();
+    private String phoneNumber;
 
-    private List<Review> reviews = new ArrayList<>();
+    private List<MenuItemResponse> menus = new ArrayList<>();
 
+    private List<ReviewItemResponse> reviews = new ArrayList<>();
+
+    private List<WaitingItemResponse> waitings = new ArrayList<>();
+
+    private List<ReservationItemResponse> reservations = new ArrayList<>();
 
 }
