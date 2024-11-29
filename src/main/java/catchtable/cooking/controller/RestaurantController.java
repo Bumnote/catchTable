@@ -14,13 +14,13 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/customers/restaurants")
 @RequiredArgsConstructor
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    @GetMapping("/restaurants")
+    @GetMapping("")
     public CommonResponse<?> readRestaurants(@RequestParam(value = "keyword", required = false) String keyword) {
 
         List<RestaurantItemResponse> restaurantItemResponses = restaurantService.readRestaurants(keyword);
@@ -35,7 +35,7 @@ public class RestaurantController {
     }
 
 
-    @GetMapping("/restaurants/{id}")
+    @GetMapping("/{id}")
     public CommonResponse<?> readRestaurant(@PathVariable Long id) {
         RestaurantItemResponse restaurantItemResponse = restaurantService.readRestaurant(id);
         return CommonResponse.of(restaurantItemResponse);
