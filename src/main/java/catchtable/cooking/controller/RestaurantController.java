@@ -34,8 +34,8 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public CommonResponse<?> readRestaurant(@PathVariable Long id) {
-        RestaurantItemAllResponse restaurantItemResponse = restaurantService.readRestaurant(id);
-        return CommonResponse.of(restaurantItemResponse);
+        RestaurantItemDetailResponse restaurantItemDetailResponse = restaurantService.readRestaurant(id);
+        return CommonResponse.of(restaurantItemDetailResponse);
     }
 
 

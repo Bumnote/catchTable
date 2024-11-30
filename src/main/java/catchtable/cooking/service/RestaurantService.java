@@ -24,7 +24,7 @@ public class RestaurantService {
     private final WaitingRepository waitingRepository;
     private final MenuRepository menuRepository;
 
-    public RestaurantItemAllResponse readRestaurant(Long id) {
+    public RestaurantItemDetailResponse readRestaurant(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
                 () -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST)
         );
@@ -32,24 +32,13 @@ public class RestaurantService {
         List<MenuItemResponse> menus = menuRepository.findAllByRestaurant(restaurant).stream()
                 .map(MenuItemResponse::of)
                 .toList();
-        List<ReviewItemResponse> reviews = reviewRepository.findAllByRestaurant(restaurant).stream()
-                .map(ReviewItemResponse::of)
-                .toList();
-        List<WaitingItemResponse> waitings = waitingRepository.findAllByRestaurant(restaurant).stream()
-                .map(WaitingItemResponse::of)
-                .toList();
-        List<ReservationItemResponse> reservations = reservationRepository.findAllByRestaurant(restaurant).stream()
-                .map(ReservationItemResponse::of)
-                .toList();
 
-        return RestaurantItemAllResponse.builder()
+        return RestaurantItemDetailResponse.builder()
+                .id(restaurant.getId())
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
                 .phoneNumber(restaurant.getPhoneNumber())
                 .menus(menus)
-                .reviews(reviews)
-                .waitings(waitings)
-                .reservations(reservations)
                 .build();
     }
 
