@@ -1,7 +1,9 @@
 package catchtable.cooking.controller;
 
-import catchtable.cooking.dto.*;
-import catchtable.cooking.exception.Code;
+import catchtable.cooking.dto.CommonResponse;
+import catchtable.cooking.dto.MenuItemResponse;
+import catchtable.cooking.dto.RestaurantItemDetailResponse;
+import catchtable.cooking.dto.RestaurantItemResponse;
 import catchtable.cooking.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,32 +27,12 @@ public class RestaurantController {
         return CommonResponse.of(restaurantItemResponses);
     }
 
-    @PostMapping("/restaurants")
-    public CommonResponse<?> createRestaurant(@RequestBody RestaurantCreateRequest restaurantCreateRequest) {
-        restaurantService.createRestaurant(restaurantCreateRequest);
-        return CommonResponse.of(Code.OK);
-    }
-
-
     @GetMapping("/{id}")
     public CommonResponse<?> readRestaurant(@PathVariable Long id) {
         RestaurantItemDetailResponse restaurantItemDetailResponse = restaurantService.readRestaurant(id);
         return CommonResponse.of(restaurantItemDetailResponse);
     }
 
-
-    @PutMapping("/restaurants/{id}")
-    public CommonResponse<?> updateRestaurant(@PathVariable Long id, @RequestBody RestaurantCreateRequest restaurantCreateRequest) {
-
-        restaurantService.updateRestaurant(id, new RestaurantCreateParam(restaurantCreateRequest));
-        return CommonResponse.of(Code.OK);
-    }
-
-    @DeleteMapping("/restaurants/{id}")
-    public CommonResponse<?> deleteRestaurant(@PathVariable Long id) {
-        restaurantService.deleteRestaurant(id);
-        return CommonResponse.of(Code.OK);
-    }
 
     @GetMapping("/{id}/menus")
     public CommonResponse<?> readRestaurantMenus(@PathVariable Long id) {

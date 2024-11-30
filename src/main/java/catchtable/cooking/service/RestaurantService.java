@@ -46,9 +46,24 @@ public class RestaurantService {
         return restaurantRepository.getRestaurants(keyword);
     }
 
-    public void createRestaurant(RestaurantCreateRequest restaurantCreateRequest) {
-        Restaurant restaurant = new Restaurant(restaurantCreateRequest);
-        restaurantRepository.save(restaurant);
+    public void createRestaurant(RestaurantCreateParam param) {
+        log.info("Creating restaurant {}", param);
+        Restaurant restaurant = restaurantRepository.save(Restaurant.builder()
+                .name(param.getName())
+                .address(param.getAddress())
+                .phoneNumber(param.getPhoneNumber())
+                .build());
+
+        param.getMenus().forEach(menuParam -> {
+            Menu menu = Menu.builder()
+                    .restaurant(restaurant)
+                    .name(menuParam.getName())
+                    .price(menuParam.getPrice())
+                    .description(menuParam.getDescription())
+                    .build();
+
+            menuRepository.save(menu);
+        });
     }
 
     public void updateRestaurant(Long id, RestaurantCreateParam restaurantCreateParam) {

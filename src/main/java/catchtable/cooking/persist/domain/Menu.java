@@ -3,11 +3,13 @@ package catchtable.cooking.persist.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Menu extends BaseTimeEntity {
@@ -22,9 +24,9 @@ public class Menu extends BaseTimeEntity {
 
     private String name;
 
-    private String description;
-
     private Integer price;
+
+    private String description;
 
     private Long createdBy;
 
