@@ -1,9 +1,6 @@
 package catchtable.cooking.controller;
 
-import catchtable.cooking.dto.CommonResponse;
-import catchtable.cooking.dto.RestaurantCreateParam;
-import catchtable.cooking.dto.RestaurantCreateRequest;
-import catchtable.cooking.dto.RestaurantItemResponse;
+import catchtable.cooking.dto.*;
 import catchtable.cooking.exception.Code;
 import catchtable.cooking.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +34,7 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public CommonResponse<?> readRestaurant(@PathVariable Long id) {
-        RestaurantItemResponse restaurantItemResponse = restaurantService.readRestaurant(id);
+        RestaurantItemAllResponse restaurantItemResponse = restaurantService.readRestaurant(id);
         return CommonResponse.of(restaurantItemResponse);
     }
 

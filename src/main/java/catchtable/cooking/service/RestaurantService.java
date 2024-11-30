@@ -24,7 +24,7 @@ public class RestaurantService {
     private final WaitingRepository waitingRepository;
     private final MenuRepository menuRepository;
 
-    public RestaurantItemResponse readRestaurant(Long id) {
+    public RestaurantItemAllResponse readRestaurant(Long id) {
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
                 () -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST)
         );
@@ -42,7 +42,7 @@ public class RestaurantService {
                 .map(ReservationItemResponse::of)
                 .toList();
 
-        return RestaurantItemResponse.builder()
+        return RestaurantItemAllResponse.builder()
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
                 .phoneNumber(restaurant.getPhoneNumber())
