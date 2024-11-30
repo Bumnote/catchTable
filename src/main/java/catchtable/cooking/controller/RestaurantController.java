@@ -52,4 +52,10 @@ public class RestaurantController {
         return CommonResponse.of(Code.OK);
     }
 
+    @GetMapping("/{id}/menus")
+    public CommonResponse<?> readRestaurantMenus(@PathVariable Long id) {
+        List<MenuItemResponse> menus = restaurantService.readRestaurantMenus(id);
+        return CommonResponse.of(menus);
+    }
+
 }

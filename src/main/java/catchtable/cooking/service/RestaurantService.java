@@ -72,4 +72,16 @@ public class RestaurantService {
         }
         restaurantRepository.deleteById(id);
     }
+
+    public List<MenuItemResponse> readRestaurantMenus(Long id) {
+
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(
+                () -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST)
+        );
+
+        List<Menu> menus = menuRepository.findAllByRestaurant(restaurant);
+
+        return menus.stream()
+                .map(MenuItemResponse::of).toList();
+    }
 }
