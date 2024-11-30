@@ -35,7 +35,6 @@ public class Restaurant extends BaseTimeEntity {
 
     private LocalDateTime deletedDateTime;
 
-
     public Restaurant(RestaurantCreateRequest restaurant) {
         this.name = restaurant.getName();
         this.phoneNumber = restaurant.getPhoneNumber();

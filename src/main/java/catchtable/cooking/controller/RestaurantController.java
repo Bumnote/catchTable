@@ -2,36 +2,27 @@ package catchtable.cooking.controller;
 
 import catchtable.cooking.dto.*;
 import catchtable.cooking.exception.Code;
-import catchtable.cooking.persist.domain.Restaurant;
 import catchtable.cooking.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
+@RequestMapping("/api/customers/restaurants")
 @RequiredArgsConstructor
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    @GetMapping("/restaurants")
-    public CommonResponse<?> readEntireRestaurant(@RequestParam(value = "keyword", required = false) String keyword) {
+    @GetMapping("")
+    public CommonResponse<?> readRestaurants(@RequestParam(value = "keyword", required = false) String keyword) {
 
-        List<Restaurant> restaurantList = restaurantService.readEntireRestaurant(keyword);
-        List<RestaurantItemResponse> restaurantItemResponse = restaurantList.stream()
-                .map(restaurant -> new RestaurantItemResponse(
-                        restaurant.getName(),
-                        restaurant.getPhoneNumber(),
-                        restaurant.getAddress(),
-                        restaurant.getMenus(),
-                        restaurant.getReviews()
-                )).collect(Collectors.toList());
+        List<RestaurantItemResponse> restaurantItemResponses = restaurantService.readRestaurants(keyword);
 
-        return CommonResponse.of(restaurantItemResponse);
+        return CommonResponse.of(restaurantItemResponses);
     }
 
     @PostMapping("/restaurants")
@@ -41,10 +32,10 @@ public class RestaurantController {
     }
 
 
-    @GetMapping("/restaurants/{id}")
+    @GetMapping("/{id}")
     public CommonResponse<?> readRestaurant(@PathVariable Long id) {
-        Restaurant restaurant = restaurantService.readRestaurant(id);
-        return CommonResponse.of(restaurant);
+        RestaurantItemDetailResponse restaurantItemDetailResponse = restaurantService.readRestaurant(id);
+        return CommonResponse.of(restaurantItemDetailResponse);
     }
 
 
@@ -59,6 +50,12 @@ public class RestaurantController {
     public CommonResponse<?> deleteRestaurant(@PathVariable Long id) {
         restaurantService.deleteRestaurant(id);
         return CommonResponse.of(Code.OK);
+    }
+
+    @GetMapping("/{id}/menus")
+    public CommonResponse<?> readRestaurantMenus(@PathVariable Long id) {
+        List<MenuItemResponse> menus = restaurantService.readRestaurantMenus(id);
+        return CommonResponse.of(menus);
     }
 
 }

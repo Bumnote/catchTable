@@ -1,22 +1,25 @@
 package catchtable.cooking.dto;
 
+import catchtable.cooking.persist.domain.MemberType;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestaurantItemResponse {
-
-    private Long id;
+public class MemberRequest {
 
     private String name;
 
-    private String address;
+    private String email;
+
+    private String nickname;
+
+    private String password;
 
     private String phoneNumber;
+
+    private MemberType role;
 
 }

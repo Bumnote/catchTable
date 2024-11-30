@@ -7,16 +7,12 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class RestaurantItemResponse {
+@AllArgsConstructor
+public class LoginRequest {
 
-    private Long id;
+    private String nickname;
 
-    private String name;
-
-    private String address;
-
-    private String phoneNumber;
+    private String password;
 
 }

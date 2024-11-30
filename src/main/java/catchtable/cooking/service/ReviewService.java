@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,14 +22,6 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final RestaurantRepository restaurantRepository;
 
-    public List<Review> readReviews(Long id) {
-        Optional<Restaurant> restaurantEntity = restaurantRepository.findById(id);
-        if (restaurantEntity.isPresent() && restaurantEntity.get().getReviews() != null) {
-            return restaurantEntity.get().getReviews();
-        } else {
-            return null;
-        }
-    }
 
     public void createReview(Long id, ReviewCreateRequest reviewCreateRequest) {
         Optional<Restaurant> restaurant = restaurantRepository.findById(id);
