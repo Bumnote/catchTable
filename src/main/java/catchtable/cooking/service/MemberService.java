@@ -120,6 +120,9 @@ public class MemberService {
     }
 
     private void memberNicknameValidate(String nickname) {
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new CustomException(Code.ALREADY_EXIST_NICKNAME);
+        }
         if (nickname.length() < 2 || nickname.length() > 12) {
             throw new CustomException(Code.INVALID_LENGTH_NICKNAME);
         }
