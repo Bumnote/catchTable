@@ -1,6 +1,6 @@
 package catchtable.cooking.dto;
 
-import catchtable.cooking.persist.domain.MemberType;
+import catchtable.cooking.persist.domain.MemberRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +22,7 @@ public class MemberSignUpParam {
 
     private String phoneNumber;
 
-    private MemberType role;
+    private MemberRole role;
 
     public MemberSignUpParam of(MemberSignUpRequest memberSignUpRequest) {
         return MemberSignUpParam.builder()

@@ -1,7 +1,7 @@
 package catchtable.cooking.dto;
 
 import catchtable.cooking.persist.domain.Member;
-import catchtable.cooking.persist.domain.MemberType;
+import catchtable.cooking.persist.domain.MemberRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +15,7 @@ public class Authentication {
 
     private String nickname;
 
-    private MemberType role;
+    private MemberRole role;
 
     public Authentication of(Member member) {
         return Authentication.builder()

@@ -1,5 +1,5 @@
 package catchtable.cooking.persist.domain;
 
-public enum MemberType {
+public enum MemberRole {
     CUSTOMER, OWNER
 }

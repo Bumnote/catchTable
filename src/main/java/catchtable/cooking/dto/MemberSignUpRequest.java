@@ -1,6 +1,6 @@
 package catchtable.cooking.dto;
 
-import catchtable.cooking.persist.domain.MemberType;
+import catchtable.cooking.persist.domain.MemberRole;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +27,6 @@ public class MemberSignUpRequest {
     private String phoneNumber;
 
     @NotNull(message = "고객 유형은 필수 선택 값입니다.")
-    private MemberType role;
+    private MemberRole role;
 
 }
