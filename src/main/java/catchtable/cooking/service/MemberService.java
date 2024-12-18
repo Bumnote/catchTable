@@ -26,9 +26,9 @@ public class MemberService {
 
     public void register(MemberCreateParam param) {
 
-        MemberNicknameValidate(param.getNickname());
-        MemberPassWordValidate(param.getPassword());
-        MemberPhoneNumberValidate(param.getPhoneNumber());
+        memberNicknameValidate(param.getNickname());
+        memberPassWordValidate(param.getPassword());
+        memberPhoneNumberValidate(param.getPhoneNumber());
 
         Member member = Member.builder()
                 .name(param.getName())
@@ -119,19 +119,19 @@ public class MemberService {
 
     }
 
-    private void MemberNicknameValidate(String nickname) {
+    private void memberNicknameValidate(String nickname) {
         if (nickname.length() < 2 || nickname.length() > 12) {
             throw new CustomException(Code.INVALID_LENGTH_NICKNAME);
         }
     }
 
-    private void MemberPassWordValidate(String password) {
+    private void memberPassWordValidate(String password) {
         if (password.length() < 8 || password.length() > 15) {
             throw new CustomException(Code.INVALID_LENGTH_PASSWORD);
         }
     }
 
-    private void MemberPhoneNumberValidate(String phoneNumber) {
+    private void memberPhoneNumberValidate(String phoneNumber) {
         String phonePattern = "^[0-9]{3}-[0-9]{4}-[0-9]{4}$";
         if (!phoneNumber.matches(phonePattern)) {
             throw new CustomException(Code.INVALID_PHONE_NUMBER);
