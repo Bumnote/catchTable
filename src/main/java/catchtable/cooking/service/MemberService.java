@@ -24,7 +24,7 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
 
 
-    public void register(MemberCreateParam param) {
+    public void register(MemberSignUpParam param) {
 
         memberNicknameValidate(param.getNickname());
         memberPassWordValidate(param.getPassword());
