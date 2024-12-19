@@ -1,14 +1,14 @@
 package catchtable.cooking.persist.repository;
 
-import catchtable.cooking.persist.domain.Review;
+import catchtable.cooking.persist.domain.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
-    List<Review> findAllByRestaurantId(Long restaurantId);
+    List<Reservation> findAllByRestaurantId(Long restaurantId);
 
 }
