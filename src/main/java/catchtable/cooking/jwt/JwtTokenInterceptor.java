@@ -53,7 +53,7 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         throw new CustomException(Code.ACCESS_TOKEN_UNAUTHORIZED);
     }
 
-    private String resolveToken(HttpServletRequest request) {
+    public String resolveToken(HttpServletRequest request) {
         log.info("resolve 토큰 검증 request: {}", request);
         String bearerToken = request.getHeader(TOKEN_HEADER);
 
@@ -66,7 +66,9 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
     }
 
     private boolean isAuthorized(String uri, String role) {
-        if (uri.startsWith("/api/customers") && role.equals("CUSTOMER"))
+        if (uri.startsWith("/api/test") && role.equals("CUSTOMER"))
+            return true;
+        else if (uri.startsWith("/api/customers") && role.equals("CUSTOMER"))
             return true;
         else return uri.startsWith("/api/owners") && role.equals("OWNER");
     }
