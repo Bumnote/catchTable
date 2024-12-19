@@ -1,6 +1,7 @@
 package catchtable.cooking.persist.repository;
 
 import catchtable.cooking.persist.domain.RefreshToken;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
@@ -10,28 +11,29 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Repository
+@RequiredArgsConstructor
 public class RefreshTokenRepository {
 
-    private final RedisTemplate<String, String> redisTemplate;
-
-    public RefreshTokenRepository(final RedisTemplate<String, String> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
+    private final RedisTemplate<Long, String> redisTemplate;
 
     public void save(final RefreshToken refreshToken) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(refreshToken.getNickname(), refreshToken.getRefreshToken());
-        redisTemplate.expire(refreshToken.getNickname(), 60, TimeUnit.SECONDS);
+        ValueOperations<Long, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(refreshToken.getId(), refreshToken.getRefreshToken());
+        redisTemplate.expire(refreshToken.getId(), 60, TimeUnit.SECONDS);
     }
 
-    public Optional<RefreshToken> findByNickname(final String refreshToken) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String nickname = valueOperations.get(refreshToken);
+    public Optional<RefreshToken> findById(final Long id) {
+        ValueOperations<Long, String> valueOperations = redisTemplate.opsForValue();
+        String refreshToken = valueOperations.get(id);
 
-        if (Objects.isNull(nickname)) {
+        if (Objects.isNull(refreshToken)) {
             return Optional.empty();
         }
 
-        return Optional.of(new RefreshToken(refreshToken, nickname));
+        return Optional.of(new RefreshToken(id, refreshToken));
+    }
+
+    public void delete(final Long id) {
+        redisTemplate.delete(id);
     }
 }

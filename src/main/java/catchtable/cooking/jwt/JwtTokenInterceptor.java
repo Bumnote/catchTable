@@ -28,10 +28,13 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
                              @NonNull Object handler) throws IOException {
 
         String token = resolveToken(request);
+        String uri = request.getRequestURI();
+        String role = jwtTokenProvider.getRole(token);
 
         log.info("access token: {}", token);
         log.info("request: {}", request);
-
+        log.info("uri: {}", uri);
+        log.info("role: {}", role);
         log.info("request path: {}", request.getServletPath());
         log.info("request header: {}", request.getHeader("Authorization"));
         log.info("request method: {}", request.getMethod());
@@ -39,8 +42,13 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         log.info("request toString: {}", request.toString());
 
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-            return true;
+            log.info("validate token: pass");
+            if (isAuthorized(uri, role)) {
+                log.info("authorized");
+                return true;
+            }
         }
+
         response.setStatus(401);
         throw new CustomException(Code.ACCESS_TOKEN_UNAUTHORIZED);
     }
@@ -57,4 +65,9 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         return null;
     }
 
+    private boolean isAuthorized(String uri, String role) {
+        if (uri.startsWith("/api/customers") && role.equals("CUSTOMER"))
+            return true;
+        else return uri.startsWith("/api/owners") && role.equals("OWNER");
+    }
 }

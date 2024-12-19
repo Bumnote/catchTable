@@ -1,14 +1,15 @@
 package catchtable.cooking.persist.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Menu extends BaseTimeEntity {
@@ -19,14 +20,13 @@ public class Menu extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
-    @JsonIgnore
     private Restaurant restaurant;
 
     private String name;
 
-    private String description;
-
     private Integer price;
+
+    private String description;
 
     private Long createdBy;
 

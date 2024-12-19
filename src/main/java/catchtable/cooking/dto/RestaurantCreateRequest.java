@@ -1,9 +1,11 @@
 package catchtable.cooking.dto;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+import java.util.List;
+
+@Getter
 @NoArgsConstructor
 public class RestaurantCreateRequest {
 
@@ -12,5 +14,7 @@ public class RestaurantCreateRequest {
     private String address;
 
     private String phoneNumber;
+
+    private List<MenuCreateRequest> menus;
 
 }

@@ -1,12 +1,16 @@
 package catchtable.cooking.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+import java.util.List;
+
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 public class RestaurantCreateParam {
 
     private String name;
@@ -15,10 +19,15 @@ public class RestaurantCreateParam {
 
     private String phoneNumber;
 
-    public RestaurantCreateParam(RestaurantCreateRequest request) {
-        this.name = request.getName();
-        this.phoneNumber = request.getPhoneNumber();
-        this.address = request.getAddress();
+    private List<MenuCreateRequest> menus;
+
+    public RestaurantCreateParam of(RestaurantCreateRequest request) {
+        return RestaurantCreateParam.builder()
+                .name(request.getName())
+                .address(request.getAddress())
+                .phoneNumber(request.getPhoneNumber())
+                .menus(request.getMenus())
+                .build();
     }
 
 }

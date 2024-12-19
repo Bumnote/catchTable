@@ -30,7 +30,7 @@ public class Member extends BaseTimeEntity {
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
-    private MemberType role;
+    private MemberRole role;
 
     private Long createdBy;
 

@@ -24,11 +24,11 @@ public class MemberService {
     private final RefreshTokenRepository refreshTokenRepository;
 
 
-    public void register(MemberCreateParam param) {
+    public void register(MemberSignUpParam param) {
 
-        MemberNicknameValidate(param.getNickname());
-        MemberPassWordValidate(param.getPassword());
-        MemberPhoneNumberValidate(param.getPhoneNumber());
+        memberNicknameValidate(param.getNickname());
+        memberPassWordValidate(param.getPassword());
+        memberPhoneNumberValidate(param.getPhoneNumber());
 
         Member member = Member.builder()
                 .name(param.getName())
@@ -55,12 +55,27 @@ public class MemberService {
         JwtToken jwtToken = jwtTokenProvider.generateToken(new Authentication().of(member));
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .key(member.getNickname())
+                .key(member.getId())
                 .value(jwtToken.getRefreshToken())
                 .build();
 
         refreshTokenRepository.save(refreshToken);
         return jwtToken;
+    }
+
+    public void logout(String token) {
+
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new CustomException(Code.ACCESS_TOKEN_UNAUTHORIZED);
+        }
+
+        String nickname = jwtTokenProvider.getSubject(token);
+        log.info("logout nickname check: {}", nickname);
+
+        Member member = memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new CustomException(Code.NOT_EXIST_NICKNAME));
+
+        refreshTokenRepository.delete(member.getId());
     }
 
     public JwtToken reissue(TokenCreateParam param, HttpServletResponse response) {
@@ -74,11 +89,13 @@ public class MemberService {
         log.info("refreshToken: {}", param.getRefreshToken());
         // 2. Access Token 에서 nickname 가져오고, set
         String nickname = jwtTokenProvider.getSubject(param.getAccessToken());
+        Member member = memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new CustomException(Code.NOT_EXIST_NICKNAME));
 
         log.info("nickname : {}", nickname);
 
         // 3. 저장소에서 nickname 를 기반으로 Refresh Token 값 가져옴
-        RefreshToken refreshToken = refreshTokenRepository.findByNickname(param.getRefreshToken())
+        RefreshToken refreshToken = refreshTokenRepository.findById(member.getId())
                 .orElseThrow(() -> new CustomException(Code.EXPIRED_REFRESH_TOKEN));
 
         log.info("refreshToken : {}", refreshToken.getRefreshToken());
@@ -88,10 +105,6 @@ public class MemberService {
         if (!refreshToken.getValue().equals(param.getRefreshToken())) {
             throw new CustomException(Code.REFRESH_TOKEN_UNMATCHED);
         }
-
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new CustomException(Code.NOT_EXIST_NICKNAME)
-        );
 
         // 5. 새로운 토큰 생성
         JwtToken jwtToken = jwtTokenProvider.generateToken(new Authentication().of(member));
@@ -106,19 +119,22 @@ public class MemberService {
 
     }
 
-    private void MemberNicknameValidate(String nickname) {
+    private void memberNicknameValidate(String nickname) {
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new CustomException(Code.ALREADY_EXIST_NICKNAME);
+        }
         if (nickname.length() < 2 || nickname.length() > 12) {
             throw new CustomException(Code.INVALID_LENGTH_NICKNAME);
         }
     }
 
-    private void MemberPassWordValidate(String password) {
+    private void memberPassWordValidate(String password) {
         if (password.length() < 8 || password.length() > 15) {
             throw new CustomException(Code.INVALID_LENGTH_PASSWORD);
         }
     }
 
-    private void MemberPhoneNumberValidate(String phoneNumber) {
+    private void memberPhoneNumberValidate(String phoneNumber) {
         String phonePattern = "^[0-9]{3}-[0-9]{4}-[0-9]{4}$";
         if (!phoneNumber.matches(phonePattern)) {
             throw new CustomException(Code.INVALID_PHONE_NUMBER);

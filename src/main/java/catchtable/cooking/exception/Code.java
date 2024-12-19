@@ -18,6 +18,7 @@ public enum Code {
     ALREADY_EXIST_NICKNAME(1005, "이미 사용중인 닉네임입니다."),
     NOT_EXIST_NICKNAME(1006, "존재하지 않는 닉네임입니다. 다시 입력해주세요."),
     UNMATCHED_PASSWORD(1007, "비밀번호가 일치하지 않습니다."),
+    NOT_NULL(1008, "반드시 값을 입력해야 합니다."),
 
     // JWT Token Exception Code
     INVALID_ACCESS_TOKEN(2000, "잘못된 ACCESS_JWT 서명입니다."),

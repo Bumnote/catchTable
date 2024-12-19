@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestaurantItemResponse {
+public class RestaurantItemDetailResponse {
 
     private Long id;
 
@@ -18,5 +21,7 @@ public class RestaurantItemResponse {
     private String address;
 
     private String phoneNumber;
+
+    private List<MenuItemResponse> menus = new ArrayList<>();
 
 }

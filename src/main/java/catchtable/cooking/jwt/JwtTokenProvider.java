@@ -54,7 +54,7 @@ public class JwtTokenProvider {
          */
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getNickname())
-                .claim("auth", authentication.getRole())
+                .claim("role", authentication.getRole())
                 .setIssuer("cooking")
                 .setIssuedAt(now)
                 .setExpiration(accessTokenExpiresIn)
@@ -112,6 +112,10 @@ public class JwtTokenProvider {
 
     public String getSubject(final String token) {
         return parseClaims(token).getSubject();
+    }
+
+    public String getRole(final String token) {
+        return parseClaims(token).get("role", String.class);
     }
 
 }
