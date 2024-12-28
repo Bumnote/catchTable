@@ -1,5 +1,6 @@
 package catchtable.cooking.config;
 
+import catchtable.cooking.resolver.UserArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

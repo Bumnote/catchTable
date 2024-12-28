@@ -1,6 +1,7 @@
-package catchtable.cooking.config;
+package catchtable.cooking.resolver;
 
-import catchtable.cooking.dto.UserArg;
+import catchtable.cooking.exception.Code;
+import catchtable.cooking.exception.CustomException;
 import catchtable.cooking.jwt.JwtTokenInterceptor;
 import catchtable.cooking.jwt.JwtTokenProvider;
 import catchtable.cooking.persist.domain.Member;
@@ -26,7 +27,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(UserArg.class);
+        return Member.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
@@ -39,7 +40,8 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         String token = jwtTokenInterceptor.resolveToken(request);
         String nickname = jwtTokenProvider.getSubject(token);
 
-        log.info("resolver nickname: {}", nickname);
-        return memberRepository.findByNickname(nickname).orElse(null);
+        return memberRepository.findByNickname(nickname).orElseThrow(
+                () -> new CustomException(Code.NOT_EXIST_NICKNAME)
+        );
     }
 }

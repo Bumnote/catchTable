@@ -41,18 +41,13 @@ public class MemberController {
     public CommonResponse<?> reissue(@RequestBody TokenRequest tokenRequest,
                                      HttpServletResponse response) {
 
-        log.info("response: {}", response);
-        log.info("response: {}", response.getStatus());
-        log.info("response: {}", response.getContentType());
         JwtToken jwtToken = memberService.reissue(new TokenCreateParam().of(tokenRequest), response);
 
         return CommonResponse.of(jwtToken);
     }
 
     @GetMapping("/api/test")
-    public CommonResponse<?> test(@UserArg Member member) {
+    public CommonResponse<?> test(Member member) {
         return CommonResponse.of(member);
     }
-
-
 }
