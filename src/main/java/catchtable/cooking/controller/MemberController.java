@@ -1,5 +1,6 @@
 package catchtable.cooking.controller;
 
+import catchtable.cooking.aspect.AuthRequired;
 import catchtable.cooking.dto.*;
 import catchtable.cooking.exception.Code;
 import catchtable.cooking.persist.domain.Member;
@@ -46,6 +47,7 @@ public class MemberController {
         return CommonResponse.of(jwtToken);
     }
 
+    @AuthRequired(role = "CUSTOMER")
     @GetMapping("/api/test")
     public CommonResponse<?> test(Member member) {
         return CommonResponse.of(member);
