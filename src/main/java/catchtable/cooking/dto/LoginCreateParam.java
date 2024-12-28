@@ -15,10 +15,10 @@ public class LoginCreateParam {
 
     private String password;
 
-    public LoginCreateParam of(LoginRequest loginRequest) {
+    public LoginCreateParam of(LoginCreateRequest loginCreateRequest) {
         return LoginCreateParam.builder()
-                .nickname(loginRequest.getNickname())
-                .password(loginRequest.getPassword())
+                .nickname(loginCreateRequest.getNickname())
+                .password(loginCreateRequest.getPassword())
                 .build();
     }
 
