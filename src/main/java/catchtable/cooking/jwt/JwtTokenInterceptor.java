@@ -31,22 +31,9 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         String uri = request.getRequestURI();
         String role = jwtTokenProvider.getRole(token);
 
-        log.info("access token: {}", token);
-        log.info("request: {}", request);
-        log.info("uri: {}", uri);
-        log.info("role: {}", role);
-        log.info("request path: {}", request.getServletPath());
-        log.info("request header: {}", request.getHeader("Authorization"));
-        log.info("request method: {}", request.getMethod());
-        log.info("request contentType: {}", request.getContentType());
-        log.info("request toString: {}", request.toString());
-
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
             log.info("validate token: pass");
-            if (isAuthorized(uri, role)) {
-                log.info("authorized");
-                return true;
-            }
+            return isAuthorized(uri, role);
         }
 
         response.setStatus(401);

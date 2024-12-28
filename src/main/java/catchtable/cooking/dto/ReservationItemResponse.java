@@ -20,12 +20,6 @@ public class ReservationItemResponse {
 
     private LocalDateTime time;
 
-    public ReservationItemResponse(Reservation reservation) {
-        this.id = reservation.getId();
-        this.status = reservation.getStatus();
-        this.time = reservation.getTime();
-    }
-
     public static ReservationItemResponse of(Reservation reservation) {
         return ReservationItemResponse.builder()
                 .id(reservation.getId())

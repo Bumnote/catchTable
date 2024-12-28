@@ -20,13 +20,6 @@ public class MenuItemResponse {
 
     private Integer price;
 
-    public MenuItemResponse(Menu menu) {
-        this.id = menu.getId();
-        this.name = menu.getName();
-        this.description = menu.getDescription();
-        this.price = menu.getPrice();
-    }
-
     public static MenuItemResponse of(Menu menu) {
         return MenuItemResponse.builder()
                 .id(menu.getId())

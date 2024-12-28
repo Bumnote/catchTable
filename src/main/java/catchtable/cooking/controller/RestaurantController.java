@@ -19,7 +19,7 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    @GetMapping("")
+    @GetMapping
     public CommonResponse<?> readRestaurants(@RequestParam(value = "keyword", required = false) String keyword) {
 
         List<RestaurantItemResponse> restaurantItemResponses = restaurantService.readRestaurants(keyword);

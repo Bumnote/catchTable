@@ -18,6 +18,6 @@ public class WebConfig implements WebMvcConfigurer {
         log.info("Interceptor start");
         registry.addInterceptor(jwtTokenInterceptor)
                 .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/member/**");
+                .excludePathPatterns("/api/members/**");
     }
 }

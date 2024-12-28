@@ -18,12 +18,6 @@ public class ReviewItemResponse {
 
     private String imagePath;
 
-    public ReviewItemResponse(Review review) {
-        this.id = review.getId();
-        this.content = review.getContent();
-        this.imagePath = review.getImagePath();
-    }
-
     public static ReviewItemResponse of(Review review) {
         return ReviewItemResponse.builder()
                 .id(review.getId())

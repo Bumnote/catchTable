@@ -18,12 +18,6 @@ public class WaitingItemResponse {
 
     private Long personCount;
 
-    public WaitingItemResponse(Waiting waiting) {
-        this.id = waiting.getId();
-        this.status = waiting.getStatus();
-        this.personCount = waiting.getPersonCount();
-    }
-
     public static WaitingItemResponse of(Waiting waiting) {
         return WaitingItemResponse.builder()
                 .id(waiting.getId())

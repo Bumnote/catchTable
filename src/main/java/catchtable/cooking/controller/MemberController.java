@@ -1,5 +1,6 @@
 package catchtable.cooking.controller;
 
+import catchtable.cooking.aspect.AuthRequired;
 import catchtable.cooking.dto.*;
 import catchtable.cooking.exception.Code;
 import catchtable.cooking.persist.domain.Member;
@@ -17,19 +18,19 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/api/member/signup")
+    @PostMapping("/api/members/signup")
     public CommonResponse<?> signup(@Valid @RequestBody MemberSignUpRequest memberSignUpRequest) {
         memberService.register(new MemberSignUpParam().of(memberSignUpRequest));
         return CommonResponse.of(Code.OK);
     }
 
-    @PostMapping("/api/member/login")
-    public CommonResponse<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-        JwtToken jwtToken = memberService.authenticate(new LoginCreateParam().of(loginRequest));
+    @PostMapping("/api/members/login")
+    public CommonResponse<?> login(@Valid @RequestBody LoginCreateRequest loginCreateRequest) {
+        JwtToken jwtToken = memberService.authenticate(new LoginCreateParam().of(loginCreateRequest));
         return CommonResponse.of(jwtToken);
     }
 
-    @PostMapping("/api/member/logout")
+    @PostMapping("/api/members/logout")
     public CommonResponse<?> logout(@RequestHeader("Authorization") String token) {
 
         memberService.logout(token);
@@ -37,7 +38,7 @@ public class MemberController {
     }
 
 
-    @PostMapping("/api/member/reissue")
+    @PostMapping("/api/members/reissue")
     public CommonResponse<?> reissue(@RequestBody TokenRequest tokenRequest,
                                      HttpServletResponse response) {
 
@@ -46,6 +47,7 @@ public class MemberController {
         return CommonResponse.of(jwtToken);
     }
 
+    @AuthRequired(role = "CUSTOMER")
     @GetMapping("/api/test")
     public CommonResponse<?> test(Member member) {
         return CommonResponse.of(member);
