@@ -2,15 +2,13 @@ package catchtable.cooking.controller;
 
 import catchtable.cooking.dto.*;
 import catchtable.cooking.exception.Code;
+import catchtable.cooking.persist.domain.Member;
 import catchtable.cooking.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -43,19 +41,13 @@ public class MemberController {
     public CommonResponse<?> reissue(@RequestBody TokenRequest tokenRequest,
                                      HttpServletResponse response) {
 
-        log.info("response: {}", response);
-        log.info("response: {}", response.getStatus());
-        log.info("response: {}", response.getContentType());
         JwtToken jwtToken = memberService.reissue(new TokenCreateParam().of(tokenRequest), response);
 
         return CommonResponse.of(jwtToken);
     }
 
-    @PostMapping("/api/test")
-    public CommonResponse<?> test(@RequestHeader("Authorization") String token) {
-        log.info("token: {}", token);
-        return CommonResponse.of(token);
+    @GetMapping("/api/test")
+    public CommonResponse<?> test(Member member) {
+        return CommonResponse.of(member);
     }
-
-
 }
