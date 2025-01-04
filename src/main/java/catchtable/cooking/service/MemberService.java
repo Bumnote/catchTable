@@ -69,13 +69,9 @@ public class MemberService {
             throw new CustomException(Code.ACCESS_TOKEN_UNAUTHORIZED);
         }
 
-        String nickname = jwtTokenProvider.getSubject(token);
-        log.info("logout nickname check: {}", nickname);
+        MemberJwtDTO memberJwtDTO = jwtTokenProvider.getSubject(token);
 
-        Member member = memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new CustomException(Code.NOT_EXIST_NICKNAME));
-
-        refreshTokenRepository.delete(member.getId());
+        refreshTokenRepository.delete(memberJwtDTO.getId());
     }
 
     public JwtToken reissue(TokenCreateParam param, HttpServletResponse response) {
@@ -85,21 +81,12 @@ public class MemberService {
             throw new CustomException(Code.REFRESH_TOKEN_UNAUTHORIZED);
         }
 
-        log.info("accessToken: {}", param.getAccessToken());
-        log.info("refreshToken: {}", param.getRefreshToken());
         // 2. Access Token 에서 nickname 가져오고, set
-        String nickname = jwtTokenProvider.getSubject(param.getAccessToken());
-        Member member = memberRepository.findByNickname(nickname)
-                .orElseThrow(() -> new CustomException(Code.NOT_EXIST_NICKNAME));
-
-        log.info("nickname : {}", nickname);
+        MemberJwtDTO memberJwtDTO = jwtTokenProvider.getSubject(param.getAccessToken());
 
         // 3. 저장소에서 nickname 를 기반으로 Refresh Token 값 가져옴
-        RefreshToken refreshToken = refreshTokenRepository.findById(member.getId())
+        RefreshToken refreshToken = refreshTokenRepository.findById(memberJwtDTO.getId())
                 .orElseThrow(() -> new CustomException(Code.EXPIRED_REFRESH_TOKEN));
-
-        log.info("refreshToken : {}", refreshToken.getRefreshToken());
-        log.info("refreshToken key : {}", refreshToken.getKey());
 
         // 4. Refresh Token 일치 검사
         if (!refreshToken.getValue().equals(param.getRefreshToken())) {
@@ -107,7 +94,7 @@ public class MemberService {
         }
 
         // 5. 새로운 토큰 생성
-        JwtToken jwtToken = jwtTokenProvider.generateToken(new Authentication().of(member));
+        JwtToken jwtToken = jwtTokenProvider.generateToken(new Authentication().of(memberJwtDTO));
 
         // 6. 저장소 정보 업데이트
         RefreshToken newRefreshToken = refreshToken.updateValue(jwtToken.getRefreshToken());

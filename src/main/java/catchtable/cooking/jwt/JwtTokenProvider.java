@@ -2,8 +2,11 @@ package catchtable.cooking.jwt;
 
 import catchtable.cooking.dto.Authentication;
 import catchtable.cooking.dto.JwtToken;
+import catchtable.cooking.dto.MemberJwtDTO;
 import catchtable.cooking.exception.Code;
 import catchtable.cooking.exception.CustomException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,22 +30,27 @@ public class JwtTokenProvider {
     //생성자를 통하여 KEY 값을 BASE64로 디코딩(해석)하고 해석한 값을
     //SecretKey instance에 HMAC-SHA 로 암호화하여 초기화
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
-        log.info("key 암호화 시도");
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
-        log.info("key 암호화 성공");
     }
 
     //권한 값을 인자로 받아와, 각각
     public JwtToken generateToken(Authentication authentication) {
-        log.info("토큰 생성 시작");
 
         Date now = new Date();
         //만기 시간 설정
         Date accessTokenExpiresIn = new Date(now.getTime() + TOKEN_EXPIRE_TIME);
         Date refreshTokenExpiresIn = new Date(now.getTime() + TOKEN_REFRESH_TIME);
 
-        log.info("Access 토큰 생성 시작!");
+        ObjectMapper mapper = new ObjectMapper();
+        String memberJson = "";
+
+        try {
+            memberJson = mapper.writeValueAsString(authentication);
+        } catch (JsonProcessingException e) {
+            throw new CustomException(Code.ACCESS_TOKEN_UNAUTHORIZED);
+        }
+
         /**
          * Access Token 생성
          *  header "alg" : "HS256"
@@ -53,23 +61,18 @@ public class JwtTokenProvider {
          *  payload "exp" : 토큰 만료 시간
          */
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getNickname())
-                .claim("role", authentication.getRole())
+                .setSubject(memberJson)
                 .setIssuer("cooking")
                 .setIssuedAt(now)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        log.info("Access 토큰 생성 완료!");
-        log.info("Refresh 토큰 생성 시작!");
         String refreshToken = Jwts.builder()
                 .setIssuedAt(now)
                 .setExpiration(refreshTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
-
-        log.info("Refresh 토큰 생성 완료!");
 
         return JwtToken.builder()
                 .grantType(BEARER_TYPE)
@@ -84,16 +87,12 @@ public class JwtTokenProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.", e);
             throw new CustomException(Code.INVALID_ACCESS_TOKEN);
         } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.", e);
             throw new CustomException(Code.EXPIRED_ACCESS_TOKEN);
         } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.", e);
             throw new CustomException(Code.UNSUPPORTED_ACCESS_TOKEN);
         } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.", e);
             throw new CustomException(Code.WRONG_TYPE_ACCESS_TOKEN);
         }
     }
@@ -110,12 +109,24 @@ public class JwtTokenProvider {
         }
     }
 
-    public String getSubject(final String token) {
-        return parseClaims(token).getSubject();
+    public MemberJwtDTO getSubject(final String token) {
+        Claims claims = parseClaims(token);
+
+        String memberJson = claims.getSubject();
+        ObjectMapper mapper = new ObjectMapper();
+        MemberJwtDTO memberJwtDTO = null;
+
+        try {
+            memberJwtDTO = mapper.readValue(memberJson, MemberJwtDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new CustomException(Code.INVALID_ACCESS_TOKEN);
+        }
+
+        return memberJwtDTO;
     }
 
     public String getRole(final String token) {
-        return parseClaims(token).get("role", String.class);
+        return getSubject(token).getRole().toString();
     }
 
 }

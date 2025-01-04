@@ -42,6 +42,8 @@ public class AuthAspect {
 
             String requiredRole = authRequired.role();
             String tokenRole = jwtTokenProvider.getRole(token);
+            log.info("requiredRole: {}", requiredRole);
+            log.info("tokenRole = {}", tokenRole);
 
             if (!requiredRole.equals(tokenRole)) {
                 throw new CustomException(Code.ACCESS_TOKEN_UNAUTHORIZED);
