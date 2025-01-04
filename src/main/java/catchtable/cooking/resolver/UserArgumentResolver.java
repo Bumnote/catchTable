@@ -1,11 +1,8 @@
 package catchtable.cooking.resolver;
 
-import catchtable.cooking.exception.Code;
-import catchtable.cooking.exception.CustomException;
+import catchtable.cooking.dto.MemberJwtDTO;
 import catchtable.cooking.jwt.JwtTokenInterceptor;
 import catchtable.cooking.jwt.JwtTokenProvider;
-import catchtable.cooking.persist.domain.Member;
-import catchtable.cooking.persist.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,25 +20,21 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenInterceptor jwtTokenInterceptor;
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberRepository memberRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return Member.class.isAssignableFrom(parameter.getParameterType());
+        return MemberJwtDTO.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
-    public Member resolveArgument(MethodParameter parameter,
-                                  ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) throws Exception {
+    public MemberJwtDTO resolveArgument(MethodParameter parameter,
+                                        ModelAndViewContainer mavContainer,
+                                        NativeWebRequest webRequest,
+                                        WebDataBinderFactory binderFactory) throws Exception {
 
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String token = jwtTokenInterceptor.resolveToken(request);
-        String nickname = jwtTokenProvider.getSubject(token);
 
-        return memberRepository.findByNickname(nickname).orElseThrow(
-                () -> new CustomException(Code.NOT_EXIST_NICKNAME)
-        );
+        return jwtTokenProvider.getSubject(token);
     }
 }

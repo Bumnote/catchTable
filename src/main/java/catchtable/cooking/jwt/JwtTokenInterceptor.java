@@ -32,7 +32,6 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
         String role = jwtTokenProvider.getRole(token);
 
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-            log.info("validate token: pass");
             return isAuthorized(uri, role);
         }
 
@@ -41,12 +40,9 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        log.info("resolve 토큰 검증 request: {}", request);
         String bearerToken = request.getHeader(TOKEN_HEADER);
 
-        log.info("resolve bearerToken: {}", bearerToken);
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
-            log.info("resolve 토큰 검증 완료!");
             return bearerToken.substring(TOKEN_PREFIX.length());
         }
         return null;

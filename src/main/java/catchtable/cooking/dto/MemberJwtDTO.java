@@ -4,14 +4,14 @@ import catchtable.cooking.persist.domain.Member;
 import catchtable.cooking.persist.domain.MemberRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Authentication {
+public class MemberJwtDTO {
 
     private Long id;
 
@@ -19,20 +19,11 @@ public class Authentication {
 
     private MemberRole role;
 
-    public Authentication of(Member member) {
-        return Authentication.builder()
+    public MemberJwtDTO of(Member member) {
+        return MemberJwtDTO.builder()
                 .id(member.getId())
                 .nickname(member.getNickname())
                 .role(member.getRole())
                 .build();
     }
-
-    public Authentication of(MemberJwtDTO memberJwtDTO) {
-        return Authentication.builder()
-                .id(memberJwtDTO.getId())
-                .nickname(memberJwtDTO.getNickname())
-                .role(memberJwtDTO.getRole())
-                .build();
-    }
-
 }
