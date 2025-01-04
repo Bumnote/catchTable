@@ -1,10 +1,8 @@
 package catchtable.cooking.controller;
 
-import catchtable.cooking.dto.CommonResponse;
-import catchtable.cooking.dto.MenuItemResponse;
-import catchtable.cooking.dto.RestaurantItemDetailResponse;
-import catchtable.cooking.dto.RestaurantItemResponse;
+import catchtable.cooking.dto.*;
 import catchtable.cooking.service.RestaurantService;
+import catchtable.cooking.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +16,7 @@ import java.util.List;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
+    private final ReviewService reviewService;
 
     @GetMapping
     public CommonResponse<?> readRestaurants(@RequestParam(value = "keyword", required = false) String keyword) {
@@ -29,8 +28,15 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public CommonResponse<?> readRestaurant(@PathVariable Long id) {
+
         RestaurantItemDetailResponse restaurantItemDetailResponse = restaurantService.readRestaurant(id);
-        return CommonResponse.of(restaurantItemDetailResponse);
+        List<ReviewItemResponse> reviewItemResponses = reviewService.getReviews(id);
+
+        RestaurantMergedResponse restaurantMergedResponse = RestaurantMergedResponse.builder()
+                .restaurant(restaurantItemDetailResponse)
+                .reviews(reviewItemResponses).build();
+
+        return CommonResponse.of(restaurantMergedResponse);
     }
 
 
