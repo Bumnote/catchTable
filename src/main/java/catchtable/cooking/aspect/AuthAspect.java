@@ -12,7 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 
@@ -30,7 +30,7 @@ public class AuthAspect {
     public void checkAuthentication(JoinPoint joinPoint) {
 
         String token = jwtTokenInterceptor.resolveToken(request);
-        if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+        if (StringUtils.isNotBlank(token) && jwtTokenProvider.validateToken(token)) {
             log.info("validate token: pass");
         }
 
@@ -42,10 +42,8 @@ public class AuthAspect {
 
             String requiredRole = authRequired.role();
             String tokenRole = jwtTokenProvider.getRole(token);
-            log.info("requiredRole: {}", requiredRole);
-            log.info("tokenRole = {}", tokenRole);
 
-            if (!requiredRole.equals(tokenRole)) {
+            if (!StringUtils.equals(requiredRole, tokenRole)) {
                 throw new CustomException(Code.ACCESS_TOKEN_UNAUTHORIZED);
             }
         }
