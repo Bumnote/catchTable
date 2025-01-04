@@ -19,6 +19,7 @@ public enum Code {
     NOT_EXIST_NICKNAME(1006, "존재하지 않는 닉네임입니다. 다시 입력해주세요."),
     UNMATCHED_PASSWORD(1007, "비밀번호가 일치하지 않습니다."),
     NOT_NULL(1008, "반드시 값을 입력해야 합니다."),
+    ROLE_UNAUTHORIZED(1009, "서비스를 이용할 권한이 없습니다."),
 
     // JWT Token Exception Code
     INVALID_ACCESS_TOKEN(2000, "잘못된 ACCESS_JWT 서명입니다."),
@@ -31,6 +32,7 @@ public enum Code {
     REFRESH_TOKEN_UNMATCHED(2007, "REFRESH_TOKEN: 일치하지 않습니다."),
     UNSUPPORTED_ACCESS_TOKEN(2008, "지원되지 않는 JWT 토큰입니다."),
     WRONG_TYPE_ACCESS_TOKEN(2009, "JWT 토큰이 잘못되었습니다."),
+
 
     // Restaurant Exception Code
     RESTAURANT_ID_NOT_EXIST(3001, "식당 ID가 존재하지 않습니다."),

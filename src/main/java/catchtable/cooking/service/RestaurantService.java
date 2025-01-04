@@ -19,9 +19,6 @@ import java.util.List;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-    private final ReviewRepository reviewRepository;
-    private final ReservationRepository reservationRepository;
-    private final WaitingRepository waitingRepository;
     private final MenuRepository menuRepository;
 
     public RestaurantItemDetailResponse readRestaurant(Long id) {
