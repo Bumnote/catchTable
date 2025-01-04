@@ -44,7 +44,6 @@ public class RestaurantService {
     }
 
     public void createRestaurant(RestaurantCreateParam param) {
-        log.info("Creating restaurant {}", param);
         Restaurant restaurant = restaurantRepository.save(Restaurant.builder()
                 .name(param.getName())
                 .address(param.getAddress())

@@ -16,13 +16,10 @@ public class ReviewItemResponse {
 
     private String content;
 
-    private String imagePath;
-
     public static ReviewItemResponse of(Review review) {
         return ReviewItemResponse.builder()
                 .id(review.getId())
                 .content(review.getContent())
-                .imagePath(review.getImagePath())
                 .build();
     }
 

@@ -2,6 +2,7 @@ package catchtable.cooking.service;
 
 import catchtable.cooking.dto.ReviewCreateParam;
 import catchtable.cooking.dto.ReviewCreateRequest;
+import catchtable.cooking.dto.ReviewItemResponse;
 import catchtable.cooking.exception.Code;
 import catchtable.cooking.exception.CustomException;
 import catchtable.cooking.persist.domain.Restaurant;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +23,22 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final RestaurantRepository restaurantRepository;
+
+    public List<ReviewItemResponse> getReviews(Long restaurantId) {
+
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(
+                () -> new CustomException(Code.RESTAURANT_ID_NOT_EXIST)
+        );
+
+        List<Review> reviews = reviewRepository.findAllByRestaurant(restaurant);
+
+        return reviews.stream().map(review -> {
+            return ReviewItemResponse.builder()
+                    .id(review.getId())
+                    .content(review.getContent())
+                    .build();
+        }).toList();
+    }
 
 
     public void createReview(Long id, ReviewCreateRequest reviewCreateRequest) {
