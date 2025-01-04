@@ -7,12 +7,12 @@ import catchtable.cooking.jwt.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 
@@ -31,23 +31,21 @@ public class AuthAspect {
 
         String token = jwtTokenInterceptor.resolveToken(request);
         if (StringUtils.isNotBlank(token) && jwtTokenProvider.validateToken(token)) {
-            log.info("validate token: pass");
-        }
+            Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
 
-        Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+            if (method.isAnnotationPresent(AuthRequired.class)) {
 
-        if (method.isAnnotationPresent(AuthRequired.class)) {
+                AuthRequired authRequired = method.getAnnotation(AuthRequired.class);
 
-            AuthRequired authRequired = method.getAnnotation(AuthRequired.class);
+                String requiredRole = authRequired.role();
+                String tokenRole = jwtTokenProvider.getRole(token);
 
-            String requiredRole = authRequired.role();
-            String tokenRole = jwtTokenProvider.getRole(token);
-
-            if (!StringUtils.equals(requiredRole, tokenRole)) {
-                throw new CustomException(Code.ACCESS_TOKEN_UNAUTHORIZED);
+                if (!StringUtils.equals(requiredRole, tokenRole)) {
+                    throw new CustomException(Code.ROLE_UNAUTHORIZED);
+                }
             }
         }
+
+        throw new CustomException(Code.WRONG_TYPE_ACCESS_TOKEN);
     }
-
-
 }
