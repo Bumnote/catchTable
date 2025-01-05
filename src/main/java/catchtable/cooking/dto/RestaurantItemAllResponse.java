@@ -20,12 +20,16 @@ public class RestaurantItemAllResponse {
 
     private String phoneNumber;
 
+    @Builder.Default
     private List<MenuItemResponse> menus = new ArrayList<>();
 
+    @Builder.Default
     private List<ReviewItemResponse> reviews = new ArrayList<>();
 
+    @Builder.Default
     private List<WaitingItemResponse> waitings = new ArrayList<>();
 
+    @Builder.Default
     private List<ReservationItemResponse> reservations = new ArrayList<>();
 
 }

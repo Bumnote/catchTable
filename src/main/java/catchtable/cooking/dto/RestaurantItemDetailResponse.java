@@ -22,6 +22,7 @@ public class RestaurantItemDetailResponse {
 
     private String phoneNumber;
 
+    @Builder.Default
     private List<MenuItemResponse> menus = new ArrayList<>();
 
 }

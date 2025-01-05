@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Builder
@@ -18,13 +18,13 @@ public class ReservationItemResponse {
 
     private String status;
 
-    private LocalDateTime time;
+    private LocalTime time;
 
     public static ReservationItemResponse of(Reservation reservation) {
         return ReservationItemResponse.builder()
                 .id(reservation.getId())
                 .status(reservation.getStatus())
-                .time(reservation.getTime())
+                .time(reservation.getReservationTime())
                 .build();
     }
 
