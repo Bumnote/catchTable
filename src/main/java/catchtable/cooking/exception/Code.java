@@ -20,6 +20,7 @@ public enum Code {
     UNMATCHED_PASSWORD(1007, "비밀번호가 일치하지 않습니다."),
     NOT_NULL(1008, "반드시 값을 입력해야 합니다."),
     ROLE_UNAUTHORIZED(1009, "서비스를 이용할 권한이 없습니다."),
+    NOT_EXIST_MEMBER(1010, "존재하지 않는 유저입니다."),
 
     // JWT Token Exception Code
     INVALID_ACCESS_TOKEN(2000, "잘못된 ACCESS_JWT 서명입니다."),
@@ -38,9 +39,10 @@ public enum Code {
     RESTAURANT_ID_NOT_EXIST(3001, "식당 ID가 존재하지 않습니다."),
 
     // Review Exception Code
-    REVIEW_Id_NOT_EXIST(3002, "리뷰 ID가 존재하지 않습니다.");
+    REVIEW_Id_NOT_EXIST(3002, "리뷰 ID가 존재하지 않습니다."),
 
     // Reservation Exception Code
+    RESERVATION_OVERBOOKING(4000, "예약 가능 횟수를 초과했습니다.");
 
     private final Integer code;
     private final String message;
